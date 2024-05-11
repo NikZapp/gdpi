@@ -1,0 +1,3 @@
+[submodule "pi_protocol"]
+	path = pi_protocol
+	url = https://github.com/MCPI-Revival/pi_protocol
