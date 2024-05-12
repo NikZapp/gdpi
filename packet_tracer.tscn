@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcl4x1rni6kp0"]
+
+[ext_resource type="Script" path="res://packet_tracer.gd" id="1_onl8w"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_onl8w")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer"]
+layout_mode = 2
+split_offset = 860
+
+[node name="Logger" type="VBoxContainer" parent="PanelContainer/HSplitContainer"]
+layout_mode = 2
+
+[node name="Name" type="RichTextLabel" parent="PanelContainer/HSplitContainer/Logger"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[font_size=30]Packet Tracer[/font_size]"
+fit_content = true
+
+[node name="Console" type="RichTextLabel" parent="PanelContainer/HSplitContainer/Logger"]
+layout_mode = 2
+size_flags_vertical = 3
+scroll_following = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/HSplitContainer/Logger"]
+layout_mode = 2
+
+[node name="Command" type="TextEdit" parent="PanelContainer/HSplitContainer/Logger/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Command"
+
+[node name="Send" type="Button" parent="PanelContainer/HSplitContainer/Logger/HBoxContainer"]
+layout_mode = 2
+text = "Send"
+
+[node name="PacketSelector" type="ItemList" parent="PanelContainer/HSplitContainer"]
+layout_mode = 2
+select_mode = 1
+allow_rmb_select = true
