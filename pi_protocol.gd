@@ -46,42 +46,48 @@ static func decode(data : PackedByteArray):
 		"packet_id": packet_template["packet_id"]
 	}
 	
-	data.reverse() # Convert to Little-Endian
-	var cursor = data.size() - 2
+	var cursor = 1
 	for field_name in packet_template["fields"].keys():
 		var field_type = packet_template["fields"][field_name]
 		match field_type:
 			"Byte":
 				decoded_packet[field_name] = data.decode_s8(cursor)
-				cursor -= 1
+				cursor += 1
 			"UnsignedByte":
 				decoded_packet[field_name] = data.decode_u8(cursor)
-				cursor -= 1
+				cursor += 1
 			"ShortBE":
-				decoded_packet[field_name] = data.decode_s16(cursor - 1)
-				cursor -= 2
+				reverse_endianness(data, cursor, 2)
+				decoded_packet[field_name] = data.decode_s16(cursor)
+				cursor += 2
 			"UnsignedShortBE":
-				decoded_packet[field_name] = data.decode_u16(cursor - 1)
-				cursor -= 2
+				reverse_endianness(data, cursor, 2)
+				decoded_packet[field_name] = data.decode_u16(cursor)
+				cursor += 2
 			"IntBE":
-				decoded_packet[field_name] = data.decode_s32(cursor - 3)
-				cursor -= 4
+				reverse_endianness(data, cursor, 4)
+				decoded_packet[field_name] = data.decode_s32(cursor)
+				cursor += 4
 			"UnsignedIntBE":
-				decoded_packet[field_name] = data.decode_u32(cursor - 3)
-				cursor -= 4
+				reverse_endianness(data, cursor, 4)
+				decoded_packet[field_name] = data.decode_u32(cursor)
+				cursor += 4
 			"FloatBE":
-				decoded_packet[field_name] = data.decode_float(cursor - 3)
-				cursor -= 4
+				reverse_endianness(data, cursor, 4)
+				decoded_packet[field_name] = data.decode_float(cursor)
+				cursor += 4
 			"UnsignedLongBE":
-				decoded_packet[field_name] = data.decode_u64(cursor - 7)
-				cursor -= 7
+				reverse_endianness(data, cursor, 8)
+				decoded_packet[field_name] = data.decode_u64(cursor)
+				cursor += 8
 			"String":
-				var length = data.decode_u16(cursor - 1)
-				cursor -= 2
+				reverse_endianness(data, cursor, 2)
+				var length = data.decode_u16(cursor)
+				cursor += 2
 				var s = ""
 				for i in length:
 					s += char(data.decode_u8(cursor))
-					cursor -= 1
+					cursor += 1
 				decoded_packet[field_name] = s
 			_:
 				print("Unknown field type during decoding: ", field_type, " in packet ", packet_template["packet_name"])
