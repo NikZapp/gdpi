@@ -5,6 +5,8 @@ static var packet_data : Dictionary
 
 static var encoded_packet : PackedByteArray = []
 
+enum MetadataType {BYTE, SHORT, INT, FLOAT, STRING, ITEM, VECTOR}
+
 static func load_protocol() -> void:
 	encoded_packet.resize(64)
 	var data = JSON.parse_string(FileAccess.get_file_as_string(protocol_path))
@@ -101,6 +103,57 @@ static func decode(data : PackedByteArray):
 					"count": count, 
 					"aux": aux
 				}
+			"Metadata":
+				# Metadata is special because it uses Little Endian
+				var metadata = {}
+				while true:
+					var id_with_type = data.decode_u8(cursor)
+					cursor += 1
+					
+					if id_with_type == 0x7f:
+						break
+					
+					var id = id_with_type & 0x1f
+					var type = id_with_type >> 5
+					match type:
+						MetadataType.BYTE:
+							metadata[id] = [type, data.decode_u8(cursor)]
+							cursor += 1
+						MetadataType.SHORT:
+							metadata[id] = [type, data.decode_s16(cursor)]
+							cursor += 2
+						MetadataType.INT:
+							metadata[id] = [type, data.decode_s32(cursor)]
+							cursor += 4
+						MetadataType.FLOAT:
+							metadata[id] = [type, data.decode_s32(cursor)]
+							cursor += 4
+						MetadataType.STRING:
+							reverse_endianness(data, cursor, 2)
+							var length = data.decode_u16(cursor)
+							cursor += 2
+							var s = ""
+							for i in length:
+								s += char(data.decode_u8(cursor))
+								cursor += 1
+							metadata[id] = [type, s]
+						MetadataType.ITEM:
+							var item_id = data.decode_s16(cursor)
+							var count = data.decode_u8(cursor + 2)
+							var aux = data.decode_s16(cursor + 3)
+							cursor += 5
+							metadata[id] = [type, {
+								"id": item_id, 
+								"count": count, 
+								"aux": aux
+							}]
+						MetadataType.VECTOR:
+							var x = data.decode_s32(cursor)
+							var y = data.decode_s32(cursor + 4)
+							var z = data.decode_s32(cursor + 8)
+							cursor += 12
+							metadata[id] = [type, Vector3(x, y, z)]
+				decoded_packet[field_name] = metadata
 			_:
 				print("Unknown field type during decoding: ", field_type, " in packet ", packet_template["packet_name"])
 	
@@ -171,6 +224,44 @@ static func encode(packet_id, data : Dictionary) -> PackedByteArray:
 				encoded_packet.encode_s16(cursor + 3, value.id)
 				reverse_endianness(encoded_packet, cursor, 5)
 				cursor += 5
+			"Metadata":
+				for id in value.keys():
+					var type = value[id][0]
+					var metadata = value[id][1]
+					match type:
+						MetadataType.BYTE:
+							encoded_packet.encode_u8(cursor, metadata)
+							cursor += 1
+						MetadataType.SHORT:
+							encoded_packet.encode_s16(cursor, metadata)
+							cursor += 2
+						MetadataType.INT:
+							encoded_packet.encode_s32(cursor, metadata)
+							cursor += 4
+						MetadataType.FLOAT:
+							encoded_packet.encode_s32(cursor, metadata)
+							cursor += 4
+						MetadataType.STRING:
+							var length = len(metadata)
+							encoded_packet.encode_s16(cursor, length)
+							reverse_endianness(encoded_packet, cursor, 2)
+							cursor += 2
+							var buf = value.to_ascii_buffer()
+							for i in length:
+								encoded_packet[cursor] = buf[i]
+								cursor += 1
+						MetadataType.ITEM:
+							encoded_packet.encode_s16(cursor, metadata.id)
+							encoded_packet.encode_u8(cursor + 2, metadata.get("count", 1))
+							encoded_packet.encode_s16(cursor + 3, metadata.get("aux", 0))
+							cursor += 5
+						MetadataType.VECTOR:
+							encoded_packet.encode_s32(cursor, int(metadata.x))
+							encoded_packet.encode_s32(cursor + 4, int(metadata.y))
+							encoded_packet.encode_s32(cursor + 8, int(metadata.z))
+							cursor += 12
+				encoded_packet.encode_u8(cursor, 0x7f)
+				cursor += 1
 			_:
 				print("Unknown field type during encoding: ", field_type, " in packet ", packet_template["packet_name"])
 	return encoded_packet.slice(0, cursor)
