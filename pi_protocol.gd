@@ -89,6 +89,18 @@ static func decode(data : PackedByteArray):
 					s += char(data.decode_u8(cursor))
 					cursor += 1
 				decoded_packet[field_name] = s
+			"Item":
+				reverse_endianness(data, cursor, 5) # Reverse entire thing
+				# Read in reverse too.
+				var aux = data.decode_s16(cursor)
+				var count = data.decode_u8(cursor + 2)
+				var id = data.decode_s16(cursor + 3)
+				cursor += 5
+				decoded_packet[field_name] = {
+					"id": id, 
+					"count": count, 
+					"aux": aux
+				}
 			_:
 				print("Unknown field type during decoding: ", field_type, " in packet ", packet_template["packet_name"])
 	
@@ -153,6 +165,12 @@ static func encode(packet_id, data : Dictionary) -> PackedByteArray:
 				for i in length:
 					encoded_packet[cursor] = buf[i]
 					cursor += 1
+			"Item":
+				encoded_packet.encode_s16(cursor, value.get("aux", 0))
+				encoded_packet.encode_u8(cursor + 2, value.get("count", 1))
+				encoded_packet.encode_s16(cursor + 3, value.id)
+				reverse_endianness(encoded_packet, cursor, 5)
+				cursor += 5
 			_:
 				print("Unknown field type during encoding: ", field_type, " in packet ", packet_template["packet_name"])
 	return encoded_packet.slice(0, cursor)
