@@ -54,7 +54,7 @@ func _ready():
 			"status": 1
 		}))
 
-func _process(delta):
+func _process(_delta):
 	while true:
 		var raw_packet = raknet.receive()
 		if (!raw_packet):
