@@ -1,3 +1,10 @@
-[gd_scene format=3 uid="uid://cqtvwk2lpis6d"]
+[gd_scene load_steps=3 format=3 uid="uid://cqtvwk2lpis6d"]
+
+[ext_resource type="PackedScene" uid="uid://bsvd0fcmo2sw2" path="res://network.tscn" id="1_1tu76"]
+[ext_resource type="PackedScene" uid="uid://fmitdbhq3dbv" path="res://entity_handler.tscn" id="2_75g4i"]
 
 [node name="Node3D" type="Node3D"]
+
+[node name="Network" parent="." instance=ExtResource("1_1tu76")]
+
+[node name="EntityHandler" parent="." instance=ExtResource("2_75g4i")]

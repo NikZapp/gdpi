@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://bp2h7ejnvy30"]
+
+[ext_resource type="Script" path="res://template_entity.gd" id="1_0jg65"]
+[ext_resource type="Texture2D" uid="uid://dnbsrdr4hynd0" path="res://assets/tamari_cube.png" id="1_08ruc"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xfflj"]
+albedo_texture = ExtResource("1_08ruc")
+
+[sub_resource type="BoxMesh" id="BoxMesh_8xshn"]
+material = SubResource("StandardMaterial3D_xfflj")
+
+[node name="TemplateEntity" type="Node3D"]
+script = ExtResource("1_0jg65")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_8xshn")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.42847, 0)
+billboard = 1
+text = "TemplateEntity"
