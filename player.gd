@@ -59,3 +59,6 @@ func login(username : String):
 		"protocol_2": 9,
 	})
 	raknet.send(login_packet)
+
+func logout():
+	raknet.shutdown()
