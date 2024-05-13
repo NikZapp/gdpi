@@ -12,48 +12,7 @@ signal remove_entity_packet(packet : Dictionary)
 
 func _ready():
 	network_handler.received_packet_decoded.connect(_on_packet)
-	
-	raknet.connect("localhost", 19132)
-	
-	var login_packet = protocol.encode("LoginPacket", {
-		"username": "GodotPi",
-		"protocol_1": 9,
-		"protocol_2": 9,
-	})
-	raknet.send(login_packet)
-	
-	var success = false
-	while true:
-		var raw_packet = raknet.receive()
-		if (!raw_packet):
-			continue
-		var packet = protocol.decode(raw_packet)
-		
-		match packet.packet_name:
-			"LoginStatusPacket":
-				print("Login status " + str(packet.status))
-				if packet.status != 0:
-					print("Invalid login status!")
-					match packet.status:
-						1:
-							print("Outdated client")
-						2:
-							print("Outdated server")
-					break
-			"StartGamePacket":
-				print("Starting game:")
-				for i in packet.keys():
-					if i not in ["packet_name", "packet_id"]:
-						print("- " + i + ": " + str(packet[i]))
-				success = true
-				break
-	if not success:
-		print("Failed login!")
-	else:
-		raknet.send(protocol.encode("ReadyPacket", {
-			"status": 1
-		}))
-		
+
 func _process(delta):
 	pass
 
