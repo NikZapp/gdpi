@@ -28,7 +28,7 @@ func _on_packet(packet : Dictionary) -> void:
 		"SetEntityMotionPacket":
 			entity_motion_packet.emit(packet)
 		"RemoveEntityPacket":
-			var entity = entities[packet.entity_id]
+			var entity = entities.get(packet.entity_id)
 			if entity:
 				entity.queue_free()
 			remove_entity_packet.emit(packet)
