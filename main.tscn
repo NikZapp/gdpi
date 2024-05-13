@@ -1,10 +1,43 @@
-[gd_scene load_steps=3 format=3 uid="uid://cqtvwk2lpis6d"]
+[gd_scene load_steps=10 format=3 uid="uid://cqtvwk2lpis6d"]
 
 [ext_resource type="PackedScene" uid="uid://bsvd0fcmo2sw2" path="res://network.tscn" id="1_1tu76"]
 [ext_resource type="PackedScene" uid="uid://fmitdbhq3dbv" path="res://entity_handler.tscn" id="2_75g4i"]
+[ext_resource type="PackedScene" uid="uid://b7slu3ypsw37t" path="res://player.tscn" id="3_qdjk5"]
+[ext_resource type="Shader" path="res://border.gdshader" id="4_3uppq"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5uufr"]
+
+[sub_resource type="Sky" id="Sky_fyvys"]
+sky_material = SubResource("ProceduralSkyMaterial_5uufr")
+
+[sub_resource type="Environment" id="Environment_b652y"]
+background_mode = 2
+sky = SubResource("Sky_fyvys")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4efnn"]
+render_priority = 0
+shader = ExtResource("4_3uppq")
+
+[sub_resource type="BoxMesh" id="BoxMesh_1lmqr"]
+material = SubResource("ShaderMaterial_4efnn")
+flip_faces = true
+size = Vector3(256, 128, 256)
 
 [node name="Node3D" type="Node3D"]
 
 [node name="Network" parent="." instance=ExtResource("1_1tu76")]
 
 [node name="EntityHandler" parent="." instance=ExtResource("2_75g4i")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_b652y")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(0.866025, 0.433013, -0.25, 0, 0.5, 0.866025, 0.5, -0.75, 0.433013, 0, 0, 0)
+
+[node name="Player" parent="." instance=ExtResource("3_qdjk5")]
+network_handler_path = NodePath("../Network")
+
+[node name="Border" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 128, 64, 128)
+mesh = SubResource("BoxMesh_1lmqr")
