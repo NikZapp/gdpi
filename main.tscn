@@ -4,15 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://fmitdbhq3dbv" path="res://entity_handler.tscn" id="2_75g4i"]
 [ext_resource type="PackedScene" uid="uid://b7slu3ypsw37t" path="res://player.tscn" id="3_qdjk5"]
 [ext_resource type="Shader" path="res://border.gdshader" id="4_3uppq"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5uufr"]
-
-[sub_resource type="Sky" id="Sky_fyvys"]
-sky_material = SubResource("ProceduralSkyMaterial_5uufr")
-
-[sub_resource type="Environment" id="Environment_b652y"]
-background_mode = 2
-sky = SubResource("Sky_fyvys")
+[ext_resource type="PackedScene" uid="uid://0n67sr0dp38s" path="res://time_handler.tscn" id="5_n0su7"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4efnn"]
 render_priority = 0
@@ -23,17 +15,22 @@ material = SubResource("ShaderMaterial_4efnn")
 flip_faces = true
 size = Vector3(256, 128, 256)
 
+[sub_resource type="Gradient" id="Gradient_lkmy0"]
+interpolation_mode = 2
+interpolation_color_space = 2
+offsets = PackedFloat32Array(0, 0.142544, 0.366228, 0.41886, 0.464912, 0.480263, 0.528509, 0.866228, 0.945175, 1)
+colors = PackedColorArray(1, 0.841333, 0.32, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.938401, 0.536879, 0.615431, 1, 0.69266, 0.469661, 0.835576, 1, 0.246098, 0.251022, 0.68988, 1, 0, 0, 0.0941176, 1, 0, 0, 0, 1, 0.595921, 0.384083, 4.81307e-07, 1, 1, 0.841333, 0.32, 1)
+
+[sub_resource type="Gradient" id="Gradient_qewhv"]
+interpolation_color_space = 2
+offsets = PackedFloat32Array(0, 0.0448718, 0.0854701, 0.192308, 0.344017, 0.393162, 0.416667, 0.442308, 0.59188, 0.882479, 0.963675, 1)
+colors = PackedColorArray(0.9225, 0.457941, 0, 1, 0.905038, 0.708164, 0.304665, 1, 0.60358, 0.727043, 0.862115, 1, 0.48353, 0.686408, 0.949966, 1, 0.469084, 0.634788, 0.96515, 1, 0.71193, 0.476862, 0.775027, 1, 0.246396, 0.199727, 0.470142, 1, 0.0509804, 0.0509804, 0.0980392, 1, 0, 0, 0, 1, 0.0934888, 0.161369, 0.424015, 1, 0.146284, 0.278489, 0.768078, 1, 0.9225, 0.457941, 0, 1)
+
 [node name="Node3D" type="Node3D"]
 
 [node name="Network" parent="." instance=ExtResource("1_1tu76")]
 
 [node name="EntityHandler" parent="." instance=ExtResource("2_75g4i")]
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_b652y")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(0.866025, 0.433013, -0.25, 0, 0.5, 0.866025, 0.5, -0.75, 0.433013, 0, 0, 0)
 
 [node name="Player" parent="." instance=ExtResource("3_qdjk5")]
 network_handler_path = NodePath("../Network")
@@ -41,3 +38,8 @@ network_handler_path = NodePath("../Network")
 [node name="Border" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 128, 64, 128)
 mesh = SubResource("BoxMesh_1lmqr")
+
+[node name="TimeHandler" parent="." instance=ExtResource("5_n0su7")]
+network_handler_path = NodePath("../Network")
+sunlight_gradient = SubResource("Gradient_lkmy0")
+sky_gradient = SubResource("Gradient_qewhv")
