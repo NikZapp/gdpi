@@ -5,16 +5,26 @@ extends Node3D
 @onready var protocol : Resource = network_handler.protocol
 var entity_template = preload("res://template_entity.tscn")
 var entities : Dictionary
+var difference_sum = 0
+var difference_amount = 0
+var timer = 6000
 
 signal entity_posrot_packet(packet : Dictionary)
 signal entity_motion_packet(packet : Dictionary)
 signal remove_entity_packet(packet : Dictionary)
+signal entity_data_packet(packet : Dictionary)
+signal entity_event_packet(packet : Dictionary)
 
 func _ready():
 	network_handler.received_packet_decoded.connect(_on_packet)
 
 func _process(delta):
-	pass
+	timer += delta
+	if timer >= 60:
+		timer -= 60
+		print("Average position estimation error: " + str(difference_sum / max(1, difference_amount)) + " (" + str(difference_amount) + " samples)")
+		difference_sum = 0
+		difference_amount = 0
 
 func _on_packet(packet : Dictionary) -> void:
 	match packet.packet_name:
@@ -32,5 +42,9 @@ func _on_packet(packet : Dictionary) -> void:
 			if entity:
 				entity.queue_free()
 			remove_entity_packet.emit(packet)
+		"SetEntityDataPacket":
+			entity_data_packet.emit(packet)
+		"EntityEventPacket":
+			entity_event_packet.emit(packet)
 		_:
-			print(packet.packet_name)
+			pass#print(packet.packet_name)
