@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://cqtvwk2lpis6d"]
+[gd_scene load_steps=13 format=3 uid="uid://cqtvwk2lpis6d"]
 
 [ext_resource type="PackedScene" uid="uid://bsvd0fcmo2sw2" path="res://network.tscn" id="1_1tu76"]
 [ext_resource type="PackedScene" uid="uid://fmitdbhq3dbv" path="res://entity_handler.tscn" id="2_75g4i"]
 [ext_resource type="PackedScene" uid="uid://b7slu3ypsw37t" path="res://player.tscn" id="3_qdjk5"]
 [ext_resource type="Shader" path="res://border.gdshader" id="4_3uppq"]
+[ext_resource type="Texture2D" uid="uid://cmnd5iqc2gm07" path="res://assets/out_of_bounds.png" id="5_dtnyf"]
 [ext_resource type="PackedScene" uid="uid://0n67sr0dp38s" path="res://time_handler.tscn" id="5_n0su7"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4efnn"]
@@ -13,6 +14,17 @@ shader = ExtResource("4_3uppq")
 [sub_resource type="BoxMesh" id="BoxMesh_1lmqr"]
 material = SubResource("ShaderMaterial_4efnn")
 flip_faces = true
+size = Vector3(256, 128, 256)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6uoun"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 1, 1, 0.498039)
+albedo_texture = ExtResource("5_dtnyf")
+uv1_scale = Vector3(6, 2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_aveva"]
+material = SubResource("StandardMaterial3D_6uoun")
 size = Vector3(256, 128, 256)
 
 [sub_resource type="Gradient" id="Gradient_lkmy0"]
@@ -38,6 +50,9 @@ network_handler_path = NodePath("../Network")
 [node name="Border" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 128, 64, 128)
 mesh = SubResource("BoxMesh_1lmqr")
+
+[node name="OutsideBorder" type="MeshInstance3D" parent="Border"]
+mesh = SubResource("BoxMesh_aveva")
 
 [node name="TimeHandler" parent="." instance=ExtResource("5_n0su7")]
 network_handler_path = NodePath("../Network")
