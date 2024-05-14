@@ -4,6 +4,7 @@
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_c6b1i"]
 mie_eccentricity = 0.89
+use_debanding = false
 
 [sub_resource type="Sky" id="Sky_fyvys"]
 sky_material = SubResource("PhysicalSkyMaterial_c6b1i")
@@ -14,6 +15,7 @@ background_energy_multiplier = 2.92
 sky = SubResource("Sky_fyvys")
 ambient_light_color = Color(0.259294, 0.259294, 0.259294, 1)
 ambient_light_sky_contribution = 0.75
+tonemap_mode = 1
 
 [node name="TimeHandler" type="Node3D"]
 script = ExtResource("1_ko1q1")
