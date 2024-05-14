@@ -27,6 +27,10 @@ func _process(delta):
 		difference_amount = 0
 
 func _on_packet(packet : Dictionary) -> void:
+	# Profiling statement: The match is fine, as it is matched per packet.
+	# The signals are also not an issue, nor is it the fact that all entities
+	# need to check ids
+	# Well, at least its not an issue yet.
 	match packet.packet_name:
 		"AddMobPacket":
 			var entity = entity_template.instantiate()

@@ -43,14 +43,10 @@ func setup_from_packet(packet : Dictionary):
 	yaw = -packet.pitch
 	metadata = packet.metadata
 	print("NEW ENTITY ", packet)
+	update_label()
 
 func _process(delta):
 	time_since_update += delta
-	$Label3D.text = type_to_name.get(type, "UNKNOWN") + " id:" + str(id) + "\n"
-	$Label3D.text += "data:" + str(metadata) + "\n"
-	$Label3D.text += str(pos) + " : " + str(pitch) + "," + str(yaw)
-	rotation_degrees = Vector3(pitch, yaw, 0)
-	
 	update_position()
 
 func _on_posrot(packet : Dictionary):
@@ -67,6 +63,9 @@ func _on_posrot(packet : Dictionary):
 		yaw = -packet.pitch
 		speed = Vector3()
 		time_since_update = 0
+		
+		update_position()
+		update_rotation()
 
 func _on_motion(packet : Dictionary):
 	# 8 0.23636446280308 (100826 samples)
@@ -85,8 +84,17 @@ func _on_motion(packet : Dictionary):
 	# 128 0.10415581387495 (99785 samples)
 	# 256 0.10226640528001 (100339 samples)
 	if packet.entity_id == id:
-		speed = Vector3(packet.speed_x, packet.speed_y, packet.speed_z) / 20.0 / 68.0
+		speed = Vector3(packet.speed_x, packet.speed_y, packet.speed_z) / 20.0 / 64.0
 		time_since_update = 0
 
 func update_position():
 	global_position = pos + speed * time_since_update
+
+func update_rotation():
+	rotation_degrees = Vector3(pitch, yaw, 0)
+
+@onready var info_label = $Label3D
+func update_label():
+	info_label.text = type_to_name.get(type, "UNKNOWN") + " id:" + str(id) + "\n"
+	info_label.text += "data:" + str(metadata)
+	
