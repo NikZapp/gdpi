@@ -52,8 +52,7 @@ func _on_posrot(packet : Dictionary):
 
 func _on_motion(packet : Dictionary):
 	if packet.entity_id == id:
-		speed = Vector3(packet.speed_x, packet.speed_y, packet.speed_z) / 20.0 / 64.0
-		print(speed)
+		speed = Vector3(packet.speed_x, packet.speed_y + 627, packet.speed_z) / 20.0 / 64.0
 		time_since_update = 0
 
 func _on_item(packet : Dictionary):
