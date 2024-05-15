@@ -1,0 +1,110 @@
+[gd_scene load_steps=16 format=3 uid="uid://v5iemgib4n5f"]
+
+[ext_resource type="Script" path="res://player_entity.gd" id="1_in51a"]
+[ext_resource type="Texture2D" uid="uid://dnbsrdr4hynd0" path="res://assets/tamari_cube.png" id="2_4m76m"]
+[ext_resource type="Script" path="res://held_item.gd" id="3_yt8kx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xfflj"]
+albedo_texture = ExtResource("2_4m76m")
+
+[sub_resource type="BoxMesh" id="BoxMesh_8xshn"]
+material = SubResource("StandardMaterial3D_xfflj")
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3o663"]
+albedo_color = Color(1, 1, 0.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lnak3"]
+material = SubResource("StandardMaterial3D_3o663")
+size = Vector3(0.25, 0.75, 0.25)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k0fhn"]
+albedo_color = Color(0.5, 1, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_38hej"]
+material = SubResource("StandardMaterial3D_k0fhn")
+size = Vector3(0.25, 0.75, 0.25)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u5r8u"]
+albedo_color = Color(0.5, 1, 0.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lb76w"]
+material = SubResource("StandardMaterial3D_u5r8u")
+size = Vector3(0.5, 0.75, 0.25)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gm6tm"]
+albedo_color = Color(1, 0.5, 0.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_n81xq"]
+material = SubResource("StandardMaterial3D_gm6tm")
+size = Vector3(0.25, 0.75, 0.25)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8074t"]
+albedo_color = Color(0.5, 0.5, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_xy8aq"]
+material = SubResource("StandardMaterial3D_8074t")
+size = Vector3(0.25, 0.75, 0.25)
+
+[node name="PlayerEntity" type="Node3D"]
+script = ExtResource("1_in51a")
+
+[node name="Username" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 0)
+billboard = 1
+text = "Username"
+font_size = 40
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = SubResource("BoxMesh_8xshn")
+skeleton = NodePath("../..")
+
+[node name="LegL" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.125, 0.75, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LegL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.375254, 0)
+mesh = SubResource("BoxMesh_lnak3")
+
+[node name="LegR" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.125, 0.75, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LegR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.375254, 0)
+mesh = SubResource("BoxMesh_38hej")
+skeleton = NodePath("../..")
+
+[node name="Torso" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.375, 0)
+mesh = SubResource("BoxMesh_lb76w")
+
+[node name="ArmL" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 1.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ArmL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.125, -0.375, 0)
+mesh = SubResource("BoxMesh_n81xq")
+
+[node name="ArmR" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 1.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ArmR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.125, -0.375, 0)
+mesh = SubResource("BoxMesh_xy8aq")
+skeleton = NodePath("../../LegL")
+
+[node name="HeldItem" type="Node3D" parent="ArmR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.125, -0.75, 0.25)
+script = ExtResource("3_yt8kx")
+
+[node name="Label3D" type="Label3D" parent="ArmR/HeldItem"]
+billboard = 1
+shaded = true
+text = "ID:AUX"

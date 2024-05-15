@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cqtvwk2lpis6d"]
+[gd_scene load_steps=14 format=3 uid="uid://cqtvwk2lpis6d"]
 
 [ext_resource type="PackedScene" uid="uid://bsvd0fcmo2sw2" path="res://network.tscn" id="1_1tu76"]
 [ext_resource type="PackedScene" uid="uid://fmitdbhq3dbv" path="res://entity_handler.tscn" id="2_75g4i"]
@@ -6,6 +6,7 @@
 [ext_resource type="Shader" path="res://border.gdshader" id="4_3uppq"]
 [ext_resource type="Texture2D" uid="uid://cmnd5iqc2gm07" path="res://assets/out_of_bounds.png" id="5_dtnyf"]
 [ext_resource type="PackedScene" uid="uid://0n67sr0dp38s" path="res://time_handler.tscn" id="5_n0su7"]
+[ext_resource type="PackedScene" uid="uid://mvsdtfllx62v" path="res://player_handler.tscn" id="7_8r2n0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4efnn"]
 render_priority = 0
@@ -58,3 +59,6 @@ mesh = SubResource("BoxMesh_aveva")
 network_handler_path = NodePath("../Network")
 sunlight_gradient = SubResource("Gradient_lkmy0")
 sky_gradient = SubResource("Gradient_qewhv")
+
+[node name="PlayerHandler" parent="." instance=ExtResource("7_8r2n0")]
+network_handler_path = NodePath("../Network")
