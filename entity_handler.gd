@@ -5,6 +5,8 @@ extends Node3D
 @onready var protocol : Resource = network_handler.protocol
 var entity_template = preload("res://template_entity.tscn")
 var entities : Dictionary
+
+const profile_position_estimator = false
 var difference_sum = 0
 var difference_amount = 0
 var timer = 6000
@@ -19,12 +21,13 @@ func _ready():
 	network_handler.received_packet_decoded.connect(_on_packet)
 
 func _process(delta):
-	timer += delta
-	if timer >= 60:
-		timer -= 60
-		print("Average position estimation error: " + str(difference_sum / max(1, difference_amount)) + " (" + str(difference_amount) + " samples)")
-		difference_sum = 0
-		difference_amount = 0
+	if profile_position_estimator:
+		timer += delta
+		if timer >= 60:
+			timer -= 60
+			print("Average position estimation error: " + str(difference_sum / max(1, difference_amount)) + " (" + str(difference_amount) + " samples)")
+			difference_sum = 0
+			difference_amount = 0
 
 func _on_packet(packet : Dictionary) -> void:
 	# Profiling statement: The match is fine, as it is matched per packet.

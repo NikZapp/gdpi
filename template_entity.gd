@@ -70,31 +70,20 @@ func _on_posrot(packet : Dictionary):
 		update_rotation()
 
 func _on_motion(packet : Dictionary):
-	# 8 0.23636446280308 (100826 samples)
-	# 16 0.12661363518643 (99978 samples)
-	# 32 0.09458431864551 (100129 samples)
-	# 64 0.10058967609474 (101887 samples)
-	#      66 0.09069474148566 (101725 samples)
-	#     68 0.08721365046648 (102081 samples)
-	#      70 0.08873273082801 (101329 samples)
-	#    72 0.09417275581642 (100979 samples)
-	#     76 0.09065284748929 (103181 samples)
-	#   80 0.09531888150245 (101864 samples)
-	#    88 0.09459009651092 (101038 samples)
-	#  96 0.0958249159751 (100284 samples)
-	#   1120.095435536551 (100939 samples)
-	# 128 0.10415581387495 (99785 samples)
-	# 256 0.10226640528001 (100339 samples)
 	if packet.entity_id == id:
-		speed = Vector3(packet.speed_x, packet.speed_y, packet.speed_z) / 20.0 / 64.0
+		speed = Vector3(packet.speed_x, packet.speed_y, packet.speed_z) / 1024.0
 		time_since_update = 0
 
 func _on_data(packet : Dictionary):
 	metadata.merge(packet.metadata, true)
 	update_label()
-	
+
+func approach_forever(time, limit):
+	return limit * (1.0 - (1.0 / max(1.0, time + 1.0)))
+
 func update_position():
-	global_position = pos + speed * time_since_update
+	global_position = pos + speed * approach_forever(time_since_update, 1)
+
 
 func update_rotation():
 	rotation_degrees = Vector3(pitch, yaw, 0)

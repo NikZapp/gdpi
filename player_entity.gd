@@ -54,7 +54,10 @@ func _on_posrot(packet : Dictionary):
 
 func _on_motion(packet : Dictionary):
 	if packet.entity_id == id:
-		speed = Vector3(packet.speed_x, packet.speed_y + 627, packet.speed_z) / 20.0 / 64.0
+		if packet.speed_y == -627:
+			# Gravity cancelation on surfaces
+			packet.speed_y = 0
+		speed = Vector3(packet.speed_x, packet.speed_y, packet.speed_z) / 1024.0
 		time_since_update = 0
 
 func _on_item(packet : Dictionary):
@@ -66,8 +69,11 @@ func _on_data(packet : Dictionary):
 	metadata.merge(packet.metadata, true)
 	update_label()
 
+func approach_forever(time, limit):
+	return limit * (1.0 - (1.0 / max(1.0, time + 1.0)))
+
 func update_position():
-	global_position = pos + speed * time_since_update
+	global_position = pos + speed * approach_forever(time_since_update, 1)
 
 @onready var head = $Head
 func update_rotation():
