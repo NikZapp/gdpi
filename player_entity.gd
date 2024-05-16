@@ -11,12 +11,14 @@ var username = ""
 var client_id = -1
 var held_item_id = -1
 var held_item_aux = -1
+var decoded_metadata = {}
 
 func setup_from_packet(packet : Dictionary):
 	var player_handler = get_parent()
 	player_handler.player_posrot_packet.connect(_on_posrot)
 	player_handler.player_motion_packet.connect(_on_motion)
 	player_handler.player_equipment_packet.connect(_on_item)
+	player_handler.player_data_packet.connect(_on_data)
 	
 	id = packet.entity_id
 	client_id = packet.client_id
@@ -32,7 +34,7 @@ func setup_from_packet(packet : Dictionary):
 	pitch = packet.yaw
 	yaw = -packet.pitch
 	metadata = packet.metadata
-	update_name()
+	update_label()
 	update_item()
 
 func _process(delta):
@@ -60,18 +62,26 @@ func _on_item(packet : Dictionary):
 	held_item_aux = packet.item_aux
 	update_item()
 
+func _on_data(packet : Dictionary):
+	metadata.merge(packet.metadata, true)
+	update_label()
+
 func update_position():
 	global_position = pos + speed * time_since_update
 
 @onready var head = $Head
 func update_rotation():
 	head.rotation_degrees = Vector3(pitch, 0, 0)
-	rotation_degrees = Vector3(0, yaw, 0)
+	rotation_degrees.y = yaw
+	rotation_degrees.x = 90 if decoded_metadata.get("sleeping", false) else 0
 
 @onready var username_label = $Username
-func update_name():
-	username_label.text = username
+func update_label():
+	username_label.text = username + "\n" + str(metadata)
 	
 func update_item():
 	$ArmR/HeldItem.set_item(held_item_id, held_item_aux)
 	
+func decode_metadata():
+	decoded_metadata.sleeping = metadata.get(16, [0, 0])[1] == 2
+	decode_metadata()

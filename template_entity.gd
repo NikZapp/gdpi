@@ -33,6 +33,8 @@ func setup_from_packet(packet : Dictionary):
 	var entity_handler = get_parent()
 	entity_handler.entity_posrot_packet.connect(_on_posrot)
 	entity_handler.entity_motion_packet.connect(_on_motion)
+	entity_handler.entity_data_packet.connect(_on_data)
+	
 	id = packet.entity_id
 	type = packet.type
 	pos = Vector3(packet.x, packet.y, packet.z)
@@ -42,7 +44,7 @@ func setup_from_packet(packet : Dictionary):
 	pitch = packet.yaw
 	yaw = -packet.pitch
 	metadata = packet.metadata
-	print("NEW ENTITY ", packet)
+	
 	update_label()
 
 func _process(delta):
@@ -87,6 +89,10 @@ func _on_motion(packet : Dictionary):
 		speed = Vector3(packet.speed_x, packet.speed_y, packet.speed_z) / 20.0 / 64.0
 		time_since_update = 0
 
+func _on_data(packet : Dictionary):
+	metadata.merge(packet.metadata, true)
+	update_label()
+	
 func update_position():
 	global_position = pos + speed * time_since_update
 

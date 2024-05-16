@@ -10,6 +10,7 @@ signal player_posrot_packet(packet : Dictionary)
 signal player_motion_packet(packet : Dictionary)
 signal remove_player_packet(packet : Dictionary)
 signal player_equipment_packet(packet : Dictionary)
+signal player_data_packet(packet : Dictionary)
 
 func _ready():
 	network_handler.received_packet_decoded.connect(_on_packet)
@@ -25,6 +26,8 @@ func _on_packet(packet : Dictionary) -> void:
 			player_posrot_packet.emit(packet)
 		"SetEntityMotionPacket":
 			player_motion_packet.emit(packet)
+		"SetEntityDataPacket":
+			player_data_packet.emit(packet)
 		"PlayerEquipmentPacket":
 			player_equipment_packet.emit(packet)
 		"RemovePlayerPacket":
