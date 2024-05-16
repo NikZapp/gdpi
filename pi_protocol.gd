@@ -156,7 +156,8 @@ static func decode(data : PackedByteArray):
 				decoded_packet[field_name] = metadata
 			_:
 				print("Unknown field type during decoding: ", field_type, " in packet ", packet_template["packet_name"])
-	
+		if (field_name == "has_motion") and (decoded_packet.has_motion <= 0):
+			return decoded_packet
 	return decoded_packet
 
 static func encode(packet_id, data : Dictionary) -> PackedByteArray:
