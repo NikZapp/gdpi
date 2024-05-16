@@ -64,7 +64,7 @@ const atlas_size = 16
 var collision_surface = SurfaceTool.new()
 var visual_surface = SurfaceTool.new()
 
-func construct_face(vertex_set : PackedVector3Array, face_data : PackedByteArray, pos : Vector3, uv : Vector2, collision_enabled : bool):
+func construct_face(vertex_set : PackedVector3Array, face_data : PackedByteArray, pos : Vector3, uv : Vector2, collision_enabled : bool, normal : Vector3):
 	var a = pos + vertex_set[face_data[0]]
 	var b = pos + vertex_set[face_data[1]]
 	var c = pos + vertex_set[face_data[2]]
@@ -75,8 +75,8 @@ func construct_face(vertex_set : PackedVector3Array, face_data : PackedByteArray
 	var uv_c = (uv + uv_offset[2]) / atlas_size
 	var uv_d = (uv + uv_offset[3]) / atlas_size
 	
-	visual_surface.add_triangle_fan([a, b, c], [uv_a, uv_b, uv_c])
-	visual_surface.add_triangle_fan([b, d, c], [uv_b, uv_d, uv_c])
+	visual_surface.add_triangle_fan([a, b, c], [uv_a, uv_b, uv_c], [], [], [normal, normal, normal])
+	visual_surface.add_triangle_fan([b, d, c], [uv_b, uv_d, uv_c], [], [], [normal, normal, normal])
 	
 	if collision_enabled:
 		pass
@@ -103,23 +103,22 @@ func build_mesh():
 				if is_block_transparent(block):
 					# Build faces inwards
 					if (x != 15) and not is_block_transparent(block_ids[cursor + step_x]):
-						construct_face(cube_v_set, NegX, pos + Vector3(1,0,0), Vector2.ZERO, is_solid)
+						construct_face(cube_v_set, NegX, pos + Vector3(1,0,0), Vector2.ZERO, is_solid, Vector3(-1,0,0))
 					if (y != 127) and not is_block_transparent(block_ids[cursor + step_y]):
-						construct_face(cube_v_set, NegY, pos + Vector3(0,1,0), Vector2.ZERO, is_solid)
+						construct_face(cube_v_set, NegY, pos + Vector3(0,1,0), Vector2.ZERO, is_solid, Vector3(0,-1,0))
 					if (z != 15) and not is_block_transparent(block_ids[cursor + step_z]):
-						construct_face(cube_v_set, NegZ, pos + Vector3(0,0,1), Vector2.ZERO, is_solid)
+						construct_face(cube_v_set, NegZ, pos + Vector3(0,0,1), Vector2.ZERO, is_solid, Vector3(0,0,-1))
 				else:
 					# Build faces outwards
 					if (x == 15) or is_block_transparent(block_ids[cursor + step_x]):
-						construct_face(cube_v_set, PosX, pos, Vector2.ZERO, is_solid)
+						construct_face(cube_v_set, PosX, pos, Vector2.ZERO, is_solid, Vector3(1,0,0))
 					if (y == 127) or is_block_transparent(block_ids[cursor + step_y]):
-						construct_face(cube_v_set, PosY, pos, Vector2.ZERO, is_solid)
+						construct_face(cube_v_set, PosY, pos, Vector2.ZERO, is_solid, Vector3(0,1,0))
 					if (z == 15) or is_block_transparent(block_ids[cursor + step_z]):
-						construct_face(cube_v_set, PosZ, pos, Vector2.ZERO, is_solid)
+						construct_face(cube_v_set, PosZ, pos, Vector2.ZERO, is_solid, Vector3(0,0,1))
 				
 				cursor += 1
 	
-	visual_surface.generate_normals(false)
 	visual_surface.commit(mesh)
 	mesh_instance.mesh = mesh
 	
