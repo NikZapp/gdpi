@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cqtvwk2lpis6d"]
+[gd_scene load_steps=15 format=3 uid="uid://cqtvwk2lpis6d"]
 
 [ext_resource type="PackedScene" uid="uid://bsvd0fcmo2sw2" path="res://network.tscn" id="1_1tu76"]
 [ext_resource type="PackedScene" uid="uid://fmitdbhq3dbv" path="res://entity_handler.tscn" id="2_75g4i"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cmnd5iqc2gm07" path="res://assets/out_of_bounds.png" id="5_dtnyf"]
 [ext_resource type="PackedScene" uid="uid://0n67sr0dp38s" path="res://time_handler.tscn" id="5_n0su7"]
 [ext_resource type="PackedScene" uid="uid://mvsdtfllx62v" path="res://player_handler.tscn" id="7_8r2n0"]
+[ext_resource type="PackedScene" uid="uid://fgig8lhg16mq" path="res://chunk_handler.tscn" id="8_3acna"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4efnn"]
 render_priority = 0
@@ -47,6 +48,7 @@ colors = PackedColorArray(0.9225, 0.457941, 0, 1, 0.905038, 0.708164, 0.304665, 
 
 [node name="Player" parent="." instance=ExtResource("3_qdjk5")]
 network_handler_path = NodePath("../Network")
+chunk_handler_path = NodePath("../ChunkHandler")
 
 [node name="Border" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 128, 64, 128)
@@ -61,4 +63,7 @@ sunlight_gradient = SubResource("Gradient_lkmy0")
 sky_gradient = SubResource("Gradient_qewhv")
 
 [node name="PlayerHandler" parent="." instance=ExtResource("7_8r2n0")]
+network_handler_path = NodePath("../Network")
+
+[node name="ChunkHandler" parent="." instance=ExtResource("8_3acna")]
 network_handler_path = NodePath("../Network")

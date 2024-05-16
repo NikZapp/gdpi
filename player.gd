@@ -5,6 +5,9 @@ extends Node3D
 @onready var protocol : Resource = network_handler.protocol
 @onready var camera = $FreeCamera3D
 
+@export var chunk_handler_path : NodePath
+@onready var chunk_handler : Node = get_node(chunk_handler_path)
+
 var old_pos = Vector3()
 var old_rotation = Vector3()
 var id = -1
@@ -50,6 +53,7 @@ func _on_packet(packet : Dictionary):
 				raknet.send(protocol.encode("ReadyPacket", {
 					"status": 1
 				}))
+				chunk_handler.request_all_chunks()
 
 
 func login(username : String):

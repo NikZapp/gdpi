@@ -154,6 +154,27 @@ static func decode(data : PackedByteArray):
 							cursor += 12
 							metadata[id] = [type, Vector3(x, y, z)]
 				decoded_packet[field_name] = metadata
+			"ChunkData":
+				var block_id : PackedByteArray = []
+				block_id.resize(16*128*16)
+				block_id.fill(0xff)
+				var block_data : PackedByteArray = []
+				block_data.resize(16*128*16 / 2) # Half byte for each
+				block_id.fill(0xff)
+				for z in 16:
+					for x in 16:
+						var flags = data[cursor]
+						cursor += 1
+						for big_y in 8:
+							if ((flags >> big_y) & 1):
+								var page = coords_to_offset(x, big_y << 4, z)
+								for i in 16:
+									block_id[page + i] = data[cursor + i]
+								cursor += 16
+								for i in 8:
+									block_data[page >> 1 + i] = data[cursor + i]
+								cursor += 8
+				decoded_packet[field_name] = [block_id, block_data]
 			_:
 				print("Unknown field type during decoding: ", field_type, " in packet ", packet_template["packet_name"])
 		if (field_name == "has_motion") and (decoded_packet.has_motion <= 0):
@@ -276,3 +297,6 @@ static func reverse_endianness(buffer : PackedByteArray, start : int, length : i
 		temp = buffer[i + start]
 		buffer[i + start] = buffer[length-i-1 + start]
 		buffer[length-i-1 + start] = temp
+
+static func coords_to_offset(x : int, y : int, z : int):
+	return (((x & 0x0f) << 11) + ((z & 0x0f) << 7) + (y & 0x7f))
