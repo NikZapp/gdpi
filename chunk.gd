@@ -99,7 +99,7 @@ func build_mesh():
 				var pos = Vector3(x, y, z)
 				var block = block_ids[cursor]
 				
-				var is_solid = is_block_transparent(block)
+				var is_solid = true
 				if is_block_transparent(block):
 					# Build faces inwards
 					if (x != 15) and not is_block_transparent(block_ids[cursor + step_x]):
@@ -119,6 +119,28 @@ func build_mesh():
 				
 				cursor += 1
 	
+	# Negative x wall
+	cursor = 0
+	for z in 16:
+		for y in 128:
+			var block = block_ids[cursor]
+			var is_transparent = is_block_transparent(block)
+			var is_solid = true
+			if not is_transparent:
+				construct_face(cube_v_set, NegX, Vector3(0, y, z), Vector2.ZERO, is_solid, Vector3(1,0,0))
+			cursor += 1
+	
+	# Negative z wall
+	cursor = 0
+	for x in 16:
+		for y in 128:
+			var block = block_ids[cursor]
+			var is_transparent = is_block_transparent(block)
+			var is_solid = true
+			if not is_transparent:
+				construct_face(cube_v_set, NegZ, Vector3(x, y, 0), Vector2.ZERO, is_solid, Vector3(0,0,1))
+			cursor += 1
+		cursor += step_x - 128
 	visual_surface.commit(mesh)
 	mesh_instance.mesh = mesh
 	
@@ -127,3 +149,6 @@ func build_mesh():
 		if child is MeshInstance3D:
 			child.queue_free()
 	add_child(mesh_instance)
+
+static func coords_to_offset(x : int, y : int, z : int):
+	return (((x & 0x0f) << 11) + ((z & 0x0f) << 7) + (y & 0x7f))
