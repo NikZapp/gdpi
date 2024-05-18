@@ -59,3 +59,4 @@ func _process(delta):
 	$CanvasLayer/Label.text += " x: " + str(rotation_object.transform.basis.x) + "\n"
 	$CanvasLayer/Label.text += " y: " + str(rotation_object.transform.basis.y) + "\n"
 	$CanvasLayer/Label.text += " z: " + str(rotation_object.transform.basis.z) + "\n"
+	$CanvasLayer/Label.text += "FPS: " + str(Engine.get_frames_per_second()) + "\n"
