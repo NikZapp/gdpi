@@ -66,3 +66,7 @@ func login(username : String):
 
 func logout():
 	raknet.shutdown()
+
+func _exit_tree():
+	print("Logout")
+	logout()
