@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://infinicamera.gd" id="1_mcrsf"]
 
 [node name="FreeCamera3D" type="Camera3D"]
+far = 40000.0
 script = ExtResource("1_mcrsf")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

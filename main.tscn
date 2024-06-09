@@ -52,6 +52,7 @@ chunk_handler_path = NodePath("../ChunkHandler")
 
 [node name="Border" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 128, 64, 128)
+visible = false
 mesh = SubResource("BoxMesh_1lmqr")
 
 [node name="OutsideBorder" type="MeshInstance3D" parent="Border"]

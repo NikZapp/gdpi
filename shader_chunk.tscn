@@ -1,0 +1,24 @@
+[gd_scene load_steps=6 format=3 uid="uid://c0djir618r8x0"]
+
+[ext_resource type="Script" path="res://test_chunk_builder.gd" id="1_c4gjo"]
+[ext_resource type="Shader" path="res://single_face_renderer.gdshader" id="1_gsgrd"]
+[ext_resource type="Texture2D" uid="uid://4wc84fsvo8rf" path="res://assets/terrain.png" id="3_vuss6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nkj53"]
+render_priority = 0
+shader = ExtResource("1_gsgrd")
+shader_parameter/k__ = null
+shader_parameter/mesh_data = ExtResource("3_vuss6")
+
+[sub_resource type="RibbonTrailMesh" id="RibbonTrailMesh_yusjs"]
+material = SubResource("ShaderMaterial_nkj53")
+shape = 0
+sections = 128
+section_segments = 128
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_c4gjo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+extra_cull_margin = 16384.0
+mesh = SubResource("RibbonTrailMesh_yusjs")
