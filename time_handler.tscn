@@ -11,11 +11,9 @@ sky_material = SubResource("PhysicalSkyMaterial_c6b1i")
 
 [sub_resource type="Environment" id="Environment_nab82"]
 background_mode = 2
-background_energy_multiplier = 2.92
 sky = SubResource("Sky_fyvys")
-ambient_light_color = Color(0.259294, 0.259294, 0.259294, 1)
-ambient_light_sky_contribution = 0.75
-tonemap_mode = 1
+ambient_light_color = Color(0.419813, 0.419813, 0.419813, 1)
+ambient_light_sky_contribution = 0.8
 ssao_enabled = true
 
 [node name="TimeHandler" type="Node3D"]
@@ -25,7 +23,8 @@ script = ExtResource("1_ko1q1")
 transform = Transform3D(-3.78552e-08, -0.201078, 0.979575, 0.5, 0.848337, 0.174139, -0.866025, 0.489788, 0.100539, -0.0145302, 0.0330479, 0.0153313)
 rotation_order = 3
 shadow_enabled = true
-directional_shadow_mode = 0
+directional_shadow_mode = 1
+directional_shadow_split_1 = 0.5
 directional_shadow_max_distance = 300.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

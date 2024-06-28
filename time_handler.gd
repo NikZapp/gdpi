@@ -25,6 +25,7 @@ func _process(delta):
 	sun.rotation_order = EULER_ORDER_YZX
 	sun.rotation_degrees = Vector3(-360 * days, 90, 30)
 	sun.light_color = sunlight_gradient.sample(time_of_day)
+	$WorldEnvironment.environment.ambient_light_color = sky_gradient.sample(time_of_day)
 
 func _on_packet(packet : Dictionary):
 	if packet.packet_name == "SetTimePacket":
