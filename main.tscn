@@ -46,10 +46,6 @@ colors = PackedColorArray(0.9225, 0.457941, 0, 1, 0.91, 0.812933, 0.6188, 1, 0.7
 
 [node name="EntityHandler" parent="." instance=ExtResource("2_75g4i")]
 
-[node name="Player" parent="." instance=ExtResource("3_qdjk5")]
-network_handler_path = NodePath("../Network")
-chunk_handler_path = NodePath("../ChunkHandler")
-
 [node name="Border" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 128, 64, 128)
 mesh = SubResource("BoxMesh_1lmqr")
@@ -67,3 +63,7 @@ network_handler_path = NodePath("../Network")
 
 [node name="ChunkHandler" parent="." instance=ExtResource("8_3acna")]
 network_handler_path = NodePath("../Network")
+
+[node name="Player" parent="." instance=ExtResource("3_qdjk5")]
+network_handler_path = NodePath("../Network")
+chunk_handler_path = NodePath("../ChunkHandler")

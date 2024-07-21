@@ -172,7 +172,7 @@ static func decode(data : PackedByteArray):
 									block_id[page + i] = data[cursor + i]
 								cursor += 16
 								for i in 8:
-									block_data[page >> 1 + i] = data[cursor + i]
+									block_data[(page >> 1) + i] = data[cursor + i]
 								cursor += 8
 				decoded_packet[field_name] = [block_id, block_data]
 			_:

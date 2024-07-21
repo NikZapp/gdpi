@@ -1,8 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://b3qf6vyf4f8un"]
+[gd_scene load_steps=5 format=3 uid="uid://b3qf6vyf4f8un"]
 
 [ext_resource type="Script" path="res://chunk.gd" id="1_3qssa"]
 [ext_resource type="Material" uid="uid://dgycra1gob56r" path="res://chunk_material.tres" id="2_20ehv"]
+[ext_resource type="Material" uid="uid://bm0o2aqbqcl7l" path="res://water_material.tres" id="3_jajpm"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_55f1p"]
+material = ExtResource("3_jajpm")
+center_offset = Vector3(0.5, 0.5, 0)
 
 [node name="Chunk" type="Node3D"]
 script = ExtResource("1_3qssa")
 chunk_material = ExtResource("2_20ehv")
+chunk_water_material = ExtResource("3_jajpm")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_55f1p")
