@@ -17,6 +17,9 @@ func cycle_fullscreen() -> void:
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 
+func cycle_debug_menu() -> void:
+	player.set_debug_menu_visibility(!player.get_debug_menu_visibility())
+
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("screenshot"):
 		var time_str = Time.get_datetime_string_from_system()
@@ -26,3 +29,5 @@ func _process(delta: float) -> void:
 		cycle_view_debug()
 	if Input.is_action_just_pressed("fullscreen"):
 		cycle_fullscreen()
+	if Input.is_action_just_pressed("debug_menu"):
+		cycle_debug_menu()

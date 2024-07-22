@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cd7ebumod8cve"]
+[gd_scene load_steps=20 format=3 uid="uid://cd7ebumod8cve"]
 
 [ext_resource type="PackedScene" uid="uid://bsvd0fcmo2sw2" path="res://network.tscn" id="1_1tu76"]
 [ext_resource type="PackedScene" uid="uid://fmitdbhq3dbv" path="res://entity_handler.tscn" id="2_75g4i"]
@@ -9,6 +9,10 @@
 [ext_resource type="PackedScene" uid="uid://mvsdtfllx62v" path="res://player_handler.tscn" id="7_8r2n0"]
 [ext_resource type="PackedScene" uid="uid://fgig8lhg16mq" path="res://chunk_handler.tscn" id="8_3acna"]
 [ext_resource type="Script" path="res://func_keys_controller.gd" id="9_sstwu"]
+[ext_resource type="Script" path="res://free_cam_rotation.gd" id="10_bufyr"]
+[ext_resource type="Script" path="res://free_cam_position.gd" id="11_dla1w"]
+[ext_resource type="Script" path="res://debug_fps.gd" id="12_3eujv"]
+[ext_resource type="Script" path="res://debug_pos_rot.gd" id="12_45wtr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4efnn"]
 render_priority = 0
@@ -71,3 +75,15 @@ chunk_handler_path = NodePath("../ChunkHandler")
 
 [node name="Func keys" type="Node" parent="Player"]
 script = ExtResource("9_sstwu")
+
+[node name="FreeCam rotation" type="Node" parent="Player"]
+script = ExtResource("10_bufyr")
+
+[node name="FreeCam position" type="Node" parent="Player"]
+script = ExtResource("11_dla1w")
+
+[node name="Debug FPS" type="Node" parent="Player"]
+script = ExtResource("12_3eujv")
+
+[node name="Debug PosRot" type="Node" parent="Player"]
+script = ExtResource("12_45wtr")
