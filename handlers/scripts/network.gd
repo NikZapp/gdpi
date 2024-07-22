@@ -1,6 +1,6 @@
 extends Node
 
-const protocol = preload("res://pi_protocol.gd")
+const protocol = preload("res://scripts/core/pi_protocol.gd")
 @onready var raknet = RakNetConnector.new()
 
 signal received_packet(data : PackedByteArray)

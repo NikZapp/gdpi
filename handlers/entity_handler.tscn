@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://fmitdbhq3dbv"]
 
-[ext_resource type="Script" path="res://entity_handler.gd" id="1_angqn"]
+[ext_resource type="Script" path="res://handlers/scripts/entity_handler.gd" id="1_angqn"]
 
 [node name="EntityHandler" type="Node3D"]
 script = ExtResource("1_angqn")

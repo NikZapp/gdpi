@@ -20,6 +20,7 @@ func _process(delta):
 	
 	var projected_time = last_time + ticks_since_update
 	var days = projected_time / ticks_in_day
+	days = fmod(days, 0.5)
 	var time_of_day = fmod(days, 1.0)
 	
 	sun.rotation_order = EULER_ORDER_YZX

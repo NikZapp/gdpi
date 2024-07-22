@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://bm0o2aqbqcl7l"]
 
-[ext_resource type="Shader" path="res://water.gdshader" id="1_axthi"]
+[ext_resource type="Shader" path="res://materials/shaders/water.gdshader" id="1_axthi"]
 [ext_resource type="Texture2D" uid="uid://c5mbcj00fuue2" path="res://assets/images/terrain.png" id="2_o2ghq"]
 
 [resource]

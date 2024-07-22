@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bp2h7ejnvy30"]
 
-[ext_resource type="Script" path="res://template_entity.gd" id="1_0jg65"]
+[ext_resource type="Script" path="res://objects/template_entity.gd" id="1_0jg65"]
 [ext_resource type="Texture2D" uid="uid://dnbsrdr4hynd0" path="res://assets/tamari_cube.png" id="1_08ruc"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xfflj"]

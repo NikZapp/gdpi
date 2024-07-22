@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://0n67sr0dp38s"]
 
-[ext_resource type="Script" path="res://time_handler.gd" id="1_ko1q1"]
+[ext_resource type="Script" path="res://handlers/scripts/time_handler.gd" id="1_ko1q1"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_c6b1i"]
 mie_eccentricity = 0.89

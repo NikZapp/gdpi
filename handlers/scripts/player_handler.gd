@@ -3,7 +3,7 @@ extends Node3D
 @onready var network_handler : Node = get_node(network_handler_path)
 @onready var raknet : RakNetConnector = network_handler.raknet
 @onready var protocol : Resource = network_handler.protocol
-var player_scene = preload("res://player_entity.tscn")
+var player_scene = preload("res://objects/player_entity.tscn")
 var players : Dictionary
 
 signal player_posrot_packet(packet : Dictionary)

@@ -3,7 +3,7 @@ extends Node3D
 @onready var network_handler : Node = get_node(network_handler_path)
 @onready var raknet : RakNetConnector = network_handler.raknet
 @onready var protocol : Resource = network_handler.protocol
-var entity_template = preload("res://template_entity.tscn")
+var entity_template = preload("res://objects/template_entity.tscn")
 var entities : Dictionary
 
 const profile_position_estimator = false

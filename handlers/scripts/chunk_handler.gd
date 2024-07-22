@@ -4,7 +4,7 @@ extends Node3D
 @onready var network_handler : Node = get_node(network_handler_path)
 @onready var raknet : RakNetConnector = network_handler.raknet
 @onready var protocol : Resource = network_handler.protocol
-var chunk_template = preload("res://chunk.tscn")
+var chunk_template = preload("res://objects/chunk.tscn")
 
 var world_blocks = PackedByteArray()
 var world_data = PackedByteArray()

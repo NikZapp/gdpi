@@ -2,12 +2,12 @@ shader_type spatial;
 render_mode vertex_lighting;
 uniform sampler2D block_atlas: source_color;
 
-const float PHI = 1.61803398874989484820459; // Φ = Golden Ratio 
+const float PHI = 1.61803398874989484820459; // Φ = Golden Ratio
 float gold_noise(in vec2 xy, in float seed) {
 	return fract(tan(distance(xy*PHI, xy)*seed)*xy.x);
 }
 varying flat vec4 data;
-varying vec3 w_normal;
+//uniform vec4 input_data;
 
 void vertex() {
 	vec2 d = vec2(float(INSTANCE_ID));
@@ -18,11 +18,14 @@ void vertex() {
 		1.0
 	);
 	data = INSTANCE_CUSTOM;
-	w_normal = MODEL_NORMAL_MATRIX * NORMAL;
+	//data = input_data;
+	if (VERTEX_ID == 3) {
+		VERTEX = vec3(1.0, 0.0, 0.0);
+	}
+
 	/*if (dot(NORMAL, vec3(0, -1, 0)) > 0.75) {
 		data.a += 1.0;
 	}*/
-	
 }
 
 void fragment() {
@@ -34,33 +37,20 @@ void fragment() {
 		gold_noise(index, 1.2 + t),
 		gold_noise(index, 1.3 + t)
 	);
-	
+
 	// Unpack data
-	vec3 color_mult = vec3(ivec3(
-		int(data.r) >> 8, 
-		int(data.r) & 0xff, 
-		int(data.g) >> 8
-	)) / 255.0;
-	
 	int uv_i = int(round(data.g)) & 0xff;
-	
-	vec2 uv_a = vec2(ivec2(
-		(int(data.b) >> 12) & 0xf,
-		(int(data.b) >>  8) & 0xf
-	)) / 16.0;
-	vec2 uv_b = vec2(ivec2(
-		(int(data.b) >> 4) & 0xf,
-		(int(data.b)     ) & 0xf
-	) + 1) / 16.0;
-	
+
 	vec2 uv = vec2((1.0 - UV.y), UV.x);
-	uv = mix(uv_a, uv_b, uv);
-	
-	if (dot(w_normal, vec3(0,-1,0)) > 0.75) uv = uv.yx;
 	ivec2 uv_offset = 16 * ivec2(uv_i & 15, (uv_i >> 4));
 	vec4 color = texelFetch(block_atlas, uv_offset + ivec2(uv * 16.0), 0);
-	ALBEDO = color.rgb * color_mult + noise / 100.0;
-	if (color.a < 0.5) discard;
+	ALBEDO = color.rgb + noise / 100.0;
+	//if (color.a < 0.5) discard;
+
+	ALPHA = 1.0 * color.a;
+
+	// See chunk.gdshader
+	///LIGHT_VERTEX = floor(LIGHT_VERTEX * 16.0) / 16.0;
 }
 
 //void light() {

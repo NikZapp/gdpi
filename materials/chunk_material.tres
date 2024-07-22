@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://dgycra1gob56r"]
 
-[ext_resource type="Shader" path="res://chunk.gdshader" id="1_x7ht0"]
+[ext_resource type="Shader" path="res://materials/shaders/chunk.gdshader" id="1_x7ht0"]
 [ext_resource type="Texture2D" uid="uid://c5mbcj00fuue2" path="res://assets/images/terrain.png" id="2_j2pmr"]
 
 [resource]

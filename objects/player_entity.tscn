@@ -1,8 +1,8 @@
 [gd_scene load_steps=16 format=3 uid="uid://v5iemgib4n5f"]
 
-[ext_resource type="Script" path="res://player_entity.gd" id="1_in51a"]
+[ext_resource type="Script" path="res://objects/player_entity.gd" id="1_in51a"]
 [ext_resource type="Texture2D" uid="uid://dnbsrdr4hynd0" path="res://assets/tamari_cube.png" id="2_4m76m"]
-[ext_resource type="Script" path="res://held_item.gd" id="3_yt8kx"]
+[ext_resource type="Script" path="res://objects/held_item.gd" id="3_yt8kx"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xfflj"]
 albedo_texture = ExtResource("2_4m76m")
