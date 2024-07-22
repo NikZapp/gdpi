@@ -6,6 +6,8 @@ func cycle_view_debug() -> void:
 	match get_viewport().debug_draw:
 		Viewport.DEBUG_DRAW_DISABLED:
 			get_viewport().debug_draw = Viewport.DEBUG_DRAW_OVERDRAW
+		Viewport.DEBUG_DRAW_OVERDRAW:
+			get_viewport().debug_draw = Viewport.DEBUG_DRAW_WIREFRAME
 		_:
 			get_viewport().debug_draw = Viewport.DEBUG_DRAW_DISABLED
 
