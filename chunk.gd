@@ -195,8 +195,8 @@ func is_block_transparent(id : int) -> bool:
 
 func render_shape_weird_cube(v_set : PackedVector3Array, pos : Vector3, cursor : int, block : int, aux : int, showsides : PackedByteArray, insets : PackedByteArray, skip_side_check : bool):
 	var x = round(pos.x)
-	var y = round(pos.x)
-	var z = round(pos.x)
+	var y = round(pos.y)
+	var z = round(pos.z)
 	# Outwards faces
 	if showsides[1] and (skip_side_check or ((y != 127) and block_ids[cursor + step_y] != block and is_block_transparent(block_ids[cursor + step_y]))):
 		construct_face(v_set, PosY, pos - Vector3(0, insets[1] / 16.0, 0), block, aux, 1)
@@ -214,8 +214,8 @@ func render_shape_weird_cube(v_set : PackedVector3Array, pos : Vector3, cursor :
 
 func render_shape_cube(v_set : PackedVector3Array, pos : Vector3, cursor : int, block : int, aux : int):
 	var x = pos.x
-	var y = pos.x
-	var z = pos.x
+	var y = pos.y
+	var z = pos.z
 	# Outwards faces
 	if (y != 127) and block_ids[cursor + step_y] != block and is_block_transparent(block_ids[cursor + step_y]):
 		construct_face(v_set, PosY, pos, block, aux, 1)
@@ -255,8 +255,8 @@ func render_shape_pixel_consistent_cube(a : Vector3, b : Vector3, pos : Vector3,
 
 func render_shape_triangulated_cube(v_set : PackedVector3Array, pos : Vector3, cursor : int, block : int, aux : int):
 	var x = pos.x
-	var y = pos.x
-	var z = pos.x
+	var y = pos.y
+	var z = pos.z
 	# Outwards faces
 	if (y != 127) and BlockUtils.get_block_shape(block_ids[cursor + step_y]) != 4:
 		construct_triangle_face(v_set, PosY, pos, block, aux, 1)
