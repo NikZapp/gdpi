@@ -70,3 +70,12 @@ func logout():
 func _exit_tree():
 	print("Logout")
 	logout()
+
+func screenshot(filename : String):
+	var user_folder = DirAccess.open("user://")
+	user_folder.make_dir("screenshots")
+	
+	var screen_image = get_viewport().get_texture().get_image()
+	var full_filename = "user://screenshots/" + str(filename) + ".png"
+	screen_image.save_png(full_filename)
+	print("Saved screenshot to " + ProjectSettings.globalize_path(full_filename))

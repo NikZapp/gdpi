@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cqtvwk2lpis6d"]
+[gd_scene load_steps=16 format=3 uid="uid://cd7ebumod8cve"]
 
 [ext_resource type="PackedScene" uid="uid://bsvd0fcmo2sw2" path="res://network.tscn" id="1_1tu76"]
 [ext_resource type="PackedScene" uid="uid://fmitdbhq3dbv" path="res://entity_handler.tscn" id="2_75g4i"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://0n67sr0dp38s" path="res://time_handler.tscn" id="5_n0su7"]
 [ext_resource type="PackedScene" uid="uid://mvsdtfllx62v" path="res://player_handler.tscn" id="7_8r2n0"]
 [ext_resource type="PackedScene" uid="uid://fgig8lhg16mq" path="res://chunk_handler.tscn" id="8_3acna"]
+[ext_resource type="Script" path="res://func_keys_controller.gd" id="9_sstwu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4efnn"]
 render_priority = 0
@@ -67,3 +68,6 @@ network_handler_path = NodePath("../Network")
 [node name="Player" parent="." instance=ExtResource("3_qdjk5")]
 network_handler_path = NodePath("../Network")
 chunk_handler_path = NodePath("../ChunkHandler")
+
+[node name="Func keys" type="Node" parent="Player"]
+script = ExtResource("9_sstwu")
