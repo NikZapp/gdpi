@@ -142,32 +142,27 @@ func _on_packet(packet : Dictionary):
 
 
 func get_water_height(pos : Vector3) -> float: # , const Material* pCheckMtl
-	var iBias : int = 0
-	var fHeight : float = 0.0
+	var sample_count : int = 0
+	var sample_height_sum : float = 0.0
 	for i in 4:
-		var checkX : int = pos.x - (i & 1)
-		var checkY : int = pos.y
-		var checkZ : int = pos.z - ((i >> 1) & 1)
-		
 		var check_pos = pos - Vector3(i & 1, 0, i >> 1)
 		
 		if BlockUtils.is_water(get_block(check_pos + Vector3(0,1,0))):
 			return 1.0
 		
 		if BlockUtils.is_water(get_block(check_pos)):
-			#print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA LETS GOOOOOOOOOOOOO")
 			var data = get_data(check_pos)
 			if data >= 8 or data == 0:
-				fHeight += data_to_liquid_volume(get_data(check_pos)) * 10.0
-				iBias += 10
-			fHeight += data_to_liquid_volume(get_data(check_pos))
-			iBias += 1
+				sample_height_sum += data_to_liquid_volume(get_data(check_pos)) * 10.0
+				sample_count += 10
+			sample_height_sum += data_to_liquid_volume(get_data(check_pos))
+			sample_count += 1
 			continue
 		
 		if BlockUtils.is_transparent(get_block(check_pos)):
-			fHeight += 1.0
-			iBias += 1
-	return 1.0 - (fHeight / float(iBias))
+			sample_height_sum += 1.0
+			sample_count += 1
+	return 1.0 - (sample_height_sum / float(sample_count))
 
 func data_to_liquid_volume(data : int) -> float:
 	if data >= 8:
