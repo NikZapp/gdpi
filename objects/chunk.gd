@@ -146,13 +146,23 @@ func construct_face(vertex_set : PackedVector3Array, face_data : PackedByteArray
 	var b = pos + vertex_set[face_data[1]]
 	var c = pos + vertex_set[face_data[2]]
 	#var d = pos + vertex_set[face_data[3]]
+	var texture_id = BlockUtils.block_to_texture(block, aux, side)
 	
-	if block == 2 and side == 1: # Grass block top
-		set_color(32, 255, 16)
+	if block == 2: # Grass block
+		match side:
+			1:
+				set_color(32, 255, 16) # top
+			0:
+				pass # bottom
+			_:
+				# sides
+				# Check if snow on top:
+				if (pos.y != 127) and BlockUtils.is_snow(chunk_handler.get_block(pos + Vector3(0,1,0))):
+					texture_id = 0x44
 	
 	# This breaks lighting somehow ( C -> B )
 	transform_array.append(Transform3D(c - a, b - a, (c - a).cross(b - a), a)) # Magic sauce
-	uv_block_array.append(BlockUtils.block_to_texture(block, aux, side))
+	uv_block_array.append(texture_id)
 	uv_a_array.append(pack_pixel_uv(uv_a))
 	uv_b_array.append(pack_pixel_uv(uv_b - Vector2(1, 1)))
 	@warning_ignore("narrowing_conversion")
@@ -518,8 +528,10 @@ func build_mesh():
 								render_shape_weird_cube(cube_v_set, pos, cursor, block, aux, [1,1,1,1,1,1], [0,0,1,1,1,1], true)
 							17:
 								# Snow
-								render_shape_cube(snow_v_set, pos, cursor, block, aux)
-							
+								set_uv_bounds(Vector2(0,0), Vector2(16, 2))
+								render_shape_weird_cube(snow_v_set, pos, cursor, block, aux, [0,0,1,1,1,1], [0,0,0,0,0,0], false)
+								reset_uv_bounds()
+								render_shape_weird_cube(snow_v_set, pos, cursor, block, aux, [1,1,0,0,0,0], [0,0,0,0,0,0], false)
 				else:
 					# Build faces outwards
 					if (x == 255) or is_block_transparent(block_ids[cursor + step_x]):
