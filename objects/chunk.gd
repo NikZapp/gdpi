@@ -516,7 +516,7 @@ func build_mesh():
 							12:
 								# Farmland
 								# Sides
-								set_uv_bounds(Vector2(0,0), Vector2(16, 15))
+								set_uv_bounds(Vector2(0,1), Vector2(16, 16))
 								render_shape_weird_cube(farmland_v_set, pos, cursor, block, aux, [0,0,1,1,1,1], [0,0,0,0,0,0], false)
 								reset_uv_bounds()
 								# Top
@@ -528,7 +528,7 @@ func build_mesh():
 								render_shape_weird_cube(cube_v_set, pos, cursor, block, aux, [1,1,1,1,1,1], [0,0,1,1,1,1], true)
 							17:
 								# Snow
-								set_uv_bounds(Vector2(0,0), Vector2(16, 2))
+								set_uv_bounds(Vector2(0,14), Vector2(16, 16))
 								render_shape_weird_cube(snow_v_set, pos, cursor, block, aux, [0,0,1,1,1,1], [0,0,0,0,0,0], false)
 								reset_uv_bounds()
 								render_shape_weird_cube(snow_v_set, pos, cursor, block, aux, [1,1,0,0,0,0], [0,0,0,0,0,0], false)
