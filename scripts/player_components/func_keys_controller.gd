@@ -11,14 +11,20 @@ func cycle_view_debug() -> void:
 		_:
 			get_viewport().debug_draw = Viewport.DEBUG_DRAW_DISABLED
 
-func cycle_fullscreen() -> void:
+func toggle_fullscreen() -> void:
 	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_WINDOWED:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 
-func cycle_debug_menu() -> void:
+func toggle_debug_menu() -> void:
 	player.set_debug_menu_visibility(!player.get_debug_menu_visibility())
+
+func toggle_freecam() -> void:
+	if player.normal_movement:
+		player.disable_normal_movement()
+	else:
+		player.enable_normal_movement()
 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("screenshot"):
@@ -28,6 +34,8 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("view_mode_cycle"):
 		cycle_view_debug()
 	if Input.is_action_just_pressed("fullscreen"):
-		cycle_fullscreen()
+		toggle_fullscreen()
 	if Input.is_action_just_pressed("debug_menu"):
-		cycle_debug_menu()
+		toggle_debug_menu()
+	if Input.is_action_just_pressed("toggle_freecam"):
+		toggle_freecam()

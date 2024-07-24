@@ -1,6 +1,6 @@
 extends Node
 
-@onready var player = get_parent()
+@onready var player : CharacterBody3D = get_parent()
 @onready var camera = get_node("../Camera")
 
 var speed_exponent = 1
@@ -10,14 +10,15 @@ var speed = 20
 func _ready():
 	pass
 
-func _process(delta):
+func _physics_process(delta: float) -> void:
 	var direction = Vector3.ZERO
 	direction.z = int(Input.is_action_pressed("move_backward")) - int(Input.is_action_pressed("move_forward"))
 	direction.x = int(Input.is_action_pressed("move_right")) - int(Input.is_action_pressed("move_left"))
 	direction.y = int(Input.is_action_pressed("move_up")) - int(Input.is_action_pressed("move_down"))
 	
-	player.position += camera.transform.basis * direction * pow(speed, speed_exponent) * delta
-
+	player.velocity = camera.transform.basis * direction * pow(speed, speed_exponent)
+	player.move_and_slide()
+	
 	var speed_change = int(Input.is_action_pressed("speed_increase")) - int(Input.is_action_pressed("speed_decrease"))
 	speed_exponent += speed_exponent_change_speed * speed_change * delta
 	if Input.is_action_pressed("align_position"):

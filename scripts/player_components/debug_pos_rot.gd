@@ -8,5 +8,6 @@ func _process(_delta):
 		var text = "O: " + str(player.transform.origin) + "\n"
 		text += " x: " + str(camera.transform.basis.x) + "\n"
 		text += " y: " + str(camera.transform.basis.y) + "\n"
-		text += " z: " + str(camera.transform.basis.z)
+		text += " z: " + str(camera.transform.basis.z) + "\n"
+		text += "Normal movement" if player.normal_movement else "FreeCam movement"
 		player.set_debug_module_text("pos_rot_display", text)
