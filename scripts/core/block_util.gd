@@ -122,3 +122,6 @@ static func is_lava(id : int) -> bool:
 
 static func is_snow(id : int) -> bool:
 	return (id == 78) or (id == 80) # Add ice in the mix too maybe?
+
+static func has_collision(id : int) -> bool:
+	return id != 0 # TODO: do this properly

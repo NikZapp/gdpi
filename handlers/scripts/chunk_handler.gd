@@ -170,15 +170,20 @@ func data_to_liquid_volume(data : int) -> float:
 	return (data + 1.0) / 9.0
 
 func get_block(pos : Vector3) -> int:
-	if (0 <= pos.x) and (pos.x <= 255) and (0 <= pos.y) and (pos.y <= 127) and (0 <= pos.z) and (pos.z <= 255):
+	if (0 > pos.y) or (pos.y > 127):
+		return 0
+	if (0 <= pos.x) and (pos.x <= 255) and (0 <= pos.z) and (pos.z <= 255):
 		return world_blocks[coords_to_offset(pos.x, pos.y, pos.z)]
-	return 0
+	return 95 # Invisible bedrock
 
 func get_data(pos : Vector3) -> int:
 	if (0 <= pos.x) and (pos.x <= 255) and (0 <= pos.y) and (pos.y <= 127) and (0 <= pos.z) and (pos.z <= 255):
 		var cursor = coords_to_offset(pos.x, pos.y, pos.z)
 		return world_data[cursor >> 1] >> 4 if (cursor % 2) else world_data[cursor >> 1] & 15
 	return 0
+
+func get_collision_aabb(pos : Vector3) -> AABB:
+	return AABB(pos, Vector3(1, 1, 1)) # TODO: implement this!
 
 static func coords_to_offset(x : int, y : int, z : int):
 	return (((x & 0xff) << 15) + ((z & 0xff) << 7) + (y & 0x7f))

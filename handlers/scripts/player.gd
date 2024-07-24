@@ -1,4 +1,4 @@
-extends Node3D
+extends CharacterBody3D
 
 @export var network_handler_path : NodePath
 @onready var network_handler : Node = get_node(network_handler_path)
@@ -6,6 +6,7 @@ extends Node3D
 @onready var protocol : Resource = network_handler.protocol
 @onready var camera = $Camera
 @onready var debug_menu = $UI/Debug
+@onready var collision_node = $Collisions
 
 @export var chunk_handler_path : NodePath
 @onready var chunk_handler : Node = get_node(chunk_handler_path)
@@ -13,6 +14,7 @@ extends Node3D
 var normal_movement = false
 var is_sprinting = false
 var is_sneaking = false
+var collision_shapes = {}
 
 var old_pos = Vector3()
 var old_rotation = Vector3()
@@ -26,11 +28,15 @@ func _ready():
 	add_debug_module("freecam_speed")
 	add_debug_module("pos_rot_display")
 	add_debug_module("performance_fps")
+	
+	create_collision_shapes()
+	
 	network_handler.received_packet_decoded.connect(_on_packet)
 	raknet.connect("localhost", 19132)
 	login("GodotPi")
 
 func _process(delta):
+	update_collision_shapes()
 	update_server_position()
 	update_debug_menu()
 
@@ -143,3 +149,33 @@ func update_server_position():
 			raknet.send(move_packet)
 			old_pos = position
 			old_rotation = camera.rotation_degrees
+
+func create_collision_shapes():
+	for dx in range(-1, 2):
+		for dz in range(-1, 2):
+			for dy in range(-1, 3):
+				var box = CollisionShape3D.new()
+				var box_shape = BoxShape3D.new()
+				box.shape = box_shape
+				box.position = Vector3(-10, -10, -10)
+				collision_node.add_child(box)
+				collision_shapes[Vector3(dx, dy, dz)] = box
+
+func update_collision_shapes():
+	var pos = floor(position)
+	for dx in range(-1, 2):
+		for dz in range(-1, 2):
+			for dy in range(-1, 3):
+				var offset = Vector3(dx, dy, dz)
+				var check_pos = pos + offset
+				var block = chunk_handler.get_block(check_pos)
+				
+				if BlockUtils.has_collision(block):
+					var collision_aabb : AABB = chunk_handler.get_collision_aabb(check_pos)
+					if Input.is_action_pressed("ui_end"):
+						print(collision_aabb, " ", offset)
+						print(pos)
+					collision_shapes[offset].position = collision_aabb.position
+					collision_shapes[offset].shape.size = collision_aabb.size
+				else:
+					collision_shapes[offset].position = Vector3(-10, -10, -10) # Disable kinda
