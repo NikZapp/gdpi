@@ -7,6 +7,7 @@ extends CharacterBody3D
 @onready var camera = $Camera
 @onready var debug_menu = $UI/Debug
 @onready var collision_node = $Collisions
+@onready var hitbox = $Hitbox
 
 @export var chunk_handler_path : NodePath
 @onready var chunk_handler : Node = get_node(chunk_handler_path)
@@ -15,6 +16,8 @@ var normal_movement = false
 var is_sprinting = false
 var is_sneaking = false
 var collision_shapes = {}
+var movement = Vector3(0, 0, 0) # What you are inputting (joystick/keyboard)
+var motion = Vector3(0, 0, 0) # Actual motion
 
 var old_pos = Vector3()
 var old_rotation = Vector3()
@@ -36,9 +39,21 @@ func _ready():
 	login("GodotPi")
 
 func _process(delta):
-	update_collision_shapes()
 	update_server_position()
 	update_debug_menu()
+
+func _physics_process(delta: float) -> void:
+	movement.x = Input.get_action_strength("walk_right") - Input.get_action_strength("walk_left")
+	movement.z = Input.get_action_strength("walk_backwards") - Input.get_action_strength("walk_forwards")
+	
+	if Input.is_action_just_pressed("jump"):
+		jump()
+	if normal_movement:
+		update_movement(delta)
+	else:
+		motion = Vector3(0, 0, 0)
+	update_collision_shapes()
+	hitbox.disabled = !normal_movement
 
 func _on_packet(packet : Dictionary):
 	match packet.packet_name:
@@ -99,9 +114,8 @@ func disable_normal_movement() -> void:
 	normal_movement = false
 
 func jump():
-	assert(normal_movement, "Normal movement is disabled, cannot jump")
-	# TODO: implement this
-	return ERR_PRINTER_ON_FIRE
+	if is_on_floor():
+		motion.y = 0.42
 
 func move_horisontally(direction : Vector2):
 	assert(normal_movement, "Normal movement is disabled, cannot move")
@@ -179,3 +193,56 @@ func update_collision_shapes():
 					collision_shapes[offset].shape.size = collision_aabb.size
 				else:
 					collision_shapes[offset].position = Vector3(-10, -10, -10) # Disable kinda
+
+func update_movement(delta):
+	var ticks = delta * 20.0
+	
+	movement.x *= pow(0.98, ticks) # Per tick
+	movement.z *= pow(0.98, ticks) # Per tick
+	
+	var mult : float = 0.91
+	if is_on_floor():
+		var floor_block = chunk_handler.get_block(floor(position - Vector3(0,1,0)))
+		mult *= BlockUtils.get_block_slipperiness(floor_block)
+	
+	var accel : float = (0.6*0.91)**3 / (mult * mult * mult)
+	
+	var movement_factor : float = 0.1 if is_on_floor() else 0.02
+	movement_factor *= 1.3 if is_sprinting else 1.0
+	
+	movement_factor *= ticks # Account for physics tickrate
+	update_motion_xz(movement.x, movement.z, movement_factor)
+	
+	#this.moveEntity(this.motionX, this.motionY, this.motionZ);
+	velocity = motion * 20.0
+	move_and_slide()
+	motion = velocity / 20.0
+	
+	# PER TICK?!??!
+	# WWWWWWHHHHHHHHHHYYYYYYYYYYYYYY
+	# words cannot describe how much pain i went through to convert per tick gravity with drag to delta based
+	var a = -0.08 # Gravity
+	var m = 0.98 # Drag
+	var v_max = (a * m) / (1.0 - m) # Terminal velocity
+	var v = motion.y # Current velocity
+	motion.y += (v_max - v) * (1.0 - pow(m, ticks))
+	# TODO: integrate this maybe?
+	# velocity is correct now, but position isnt matching (v <= v_real)
+	# for that it must be integrated instead
+
+	motion.x *= pow(mult, ticks);
+	motion.z *= pow(mult, ticks);
+
+func update_motion_xz(strafe : float, forward : float, movement_factor : float):
+	var distance_sq = strafe * strafe + forward * forward
+	if distance_sq >= 0.0001:
+		var distance = min(1.0, sqrt(distance_sq)) # Clamp at 1 max
+		
+		distance = movement_factor / distance # What?
+		strafe *= distance
+		forward *= distance
+		var sin_yaw : float = -sin(camera.rotation.y)
+		var cos_yaw : float = cos(camera.rotation.y)
+		motion.x += strafe * cos_yaw - forward * sin_yaw
+		motion.z += strafe * sin_yaw + forward * cos_yaw
+		

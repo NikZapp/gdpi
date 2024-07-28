@@ -125,3 +125,6 @@ static func is_snow(id : int) -> bool:
 
 static func has_collision(id : int) -> bool:
 	return id != 0 # TODO: do this properly
+
+static func get_block_slipperiness(id : int) -> float:
+	return 0.6 if id != 79 else 0.98
