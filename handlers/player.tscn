@@ -8,6 +8,7 @@ size = Vector3(0.6, 1.8, 0.6)
 [sub_resource type="BoxShape3D" id="BoxShape3D_ymo4p"]
 
 [node name="Player" type="CharacterBody3D"]
+floor_snap_length = 0.6
 script = ExtResource("1_3762w")
 
 [node name="Hitbox" type="CollisionShape3D" parent="."]

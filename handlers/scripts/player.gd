@@ -43,11 +43,6 @@ func _process(delta):
 	update_debug_menu()
 
 func _physics_process(delta: float) -> void:
-	movement.x = Input.get_action_strength("walk_right") - Input.get_action_strength("walk_left")
-	movement.z = Input.get_action_strength("walk_backwards") - Input.get_action_strength("walk_forwards")
-	
-	if Input.is_action_just_pressed("jump"):
-		jump()
 	if normal_movement:
 		update_movement(delta)
 	else:
@@ -117,11 +112,6 @@ func jump():
 	if is_on_floor():
 		motion.y = 0.42
 
-func move_horisontally(direction : Vector2):
-	assert(normal_movement, "Normal movement is disabled, cannot move")
-	# TODO: implement this
-	return ERR_PRINTER_ON_FIRE
-
 func sprint(sprinting : bool):
 	is_sprinting = sprinting
 
@@ -186,15 +176,15 @@ func update_collision_shapes():
 				
 				if BlockUtils.has_collision(block):
 					var collision_aabb : AABB = chunk_handler.get_collision_aabb(check_pos)
-					if Input.is_action_pressed("ui_end"):
-						print(collision_aabb, " ", offset)
-						print(pos)
 					collision_shapes[offset].position = collision_aabb.position
 					collision_shapes[offset].shape.size = collision_aabb.size
 				else:
 					collision_shapes[offset].position = Vector3(-10, -10, -10) # Disable kinda
 
 func update_movement(delta):
+	if is_sneaking:
+		movement.x *= 0.3
+		movement.z *= 0.3
 	var ticks = delta * 20.0
 	
 	movement.x *= pow(0.98, ticks) # Per tick

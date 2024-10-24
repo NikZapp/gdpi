@@ -532,6 +532,34 @@ func build_mesh():
 								render_shape_weird_cube(snow_v_set, pos, cursor, block, aux, [0,0,1,1,1,1], [0,0,0,0,0,0], false)
 								reset_uv_bounds()
 								render_shape_weird_cube(snow_v_set, pos, cursor, block, aux, [1,1,0,0,0,0], [0,0,0,0,0,0], false)
+							18:
+								# Glass pane
+								#render_shape_pixel_consistent_cube(Vector3(6,7,8), Vector3(13,15,14), pos, block, aux)
+								# Center
+								render_shape_pixel_consistent_cube(Vector3(6,0,6), Vector3(10,16,10), pos, block, aux)
+								var render_nx : bool = (x != 0) and BlockUtils.does_connect_to_fences(block_ids[cursor - step_x])
+								var render_px : bool = (x != 255) and BlockUtils.does_connect_to_fences(block_ids[cursor + step_x])
+								var render_nz : bool = (z != 0) and BlockUtils.does_connect_to_fences(block_ids[cursor - step_z])
+								var render_pz : bool = (z != 255) and BlockUtils.does_connect_to_fences(block_ids[cursor + step_z])
+								
+								if not (render_nx or render_px or render_nz or render_pz):
+									render_nx = true
+									render_px = true
+									render_nz = true
+									render_pz = true
+								
+								if render_nx:
+									render_shape_pixel_consistent_cube(Vector3(0,6,7), Vector3(6,9,9), pos, block, aux)
+									render_shape_pixel_consistent_cube(Vector3(0,12,7), Vector3(6,15,9), pos, block, aux)
+								if render_px:
+									render_shape_pixel_consistent_cube(Vector3(10,6,7), Vector3(16,9,9), pos, block, aux)
+									render_shape_pixel_consistent_cube(Vector3(10,12,7), Vector3(16,15,9), pos, block, aux)
+								if render_nz:
+									render_shape_pixel_consistent_cube(Vector3(7,6,0), Vector3(9,9,6), pos, block, aux)
+									render_shape_pixel_consistent_cube(Vector3(7,12,0), Vector3(9,15,6), pos, block, aux)
+								if render_pz:
+									render_shape_pixel_consistent_cube(Vector3(7,6,10), Vector3(9,9,16), pos, block, aux)
+									render_shape_pixel_consistent_cube(Vector3(7,12,10), Vector3(9,15,16), pos, block, aux)
 				else:
 					# Build faces outwards
 					if (x == 255) or is_block_transparent(block_ids[cursor + step_x]):

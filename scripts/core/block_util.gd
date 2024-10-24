@@ -1,13 +1,22 @@
 class_name BlockUtils
 extends RefCounted
 
+enum PropertyFlags {
+	TRANSPARENT = 1,
+	NO_COLLISION = 2,
+	CUSTOM_COLLISION = 4
+}
+
 static var uv_mapping = PackedByteArray()
-static var transparent_blocks = [  0,   6,   8,   9,   10,  11,  18,  20,  26,  30, 
-								   31,  37,  38,  39,  40,  44,  50,  51,  53,  54, 
-								   59,  60,  63,  64,  65,  67,  68,  71,  78,  81,
-								   83,  85,  95,  96, 102, 105, 107, 108, 109, 114,
-								   128, 156, 254]
-static var transparency_mapping = PackedByteArray()
+static var transparent_blocks = [ 
+	0,   6,   8,   9,   10,  11,  18,  20,  26,  30,  31,  37,  38,  39,  40,
+	44,  50,  51,  53,  54,  59,  60,  63,  64,  65,  67,  68,  71,  78,  81,
+	83,  85,  95,  96, 102, 105, 107, 108, 109, 114, 128, 156, 254
+]
+static var blocks_without_collision = [
+	0,   6,   31,  37,  38,  39,  40,  50,  51,  59,  63,  68,  78,  83, 105,
+]
+static var property_mapping = PackedByteArray()
 static var transparent_blocks_shapes = {
 	6: 1, 30: 1, 31: 1, 37: 1, 38: 1, 39: 1, 40: 1, 83: 1, # Cross
 	50: 2, # Torch
@@ -35,7 +44,7 @@ static var transparent_blocks_shapes = {
 
 static func setup() -> void:
 	load_uv_mappings("res://assets/data/uv.txt")
-	load_transparency_mappings()
+	load_block_properties()
 
 static func load_uv_mappings(filepath : String) -> void:
 	uv_mapping.resize(256*16*6)
@@ -66,14 +75,16 @@ static func load_uv_mappings(filepath : String) -> void:
 static func block_to_texture(id : int, data : int, side : int) -> int:
 	return uv_mapping[(id * 16 + data) * 6 + min(5, side)]
 
-static func load_transparency_mappings() -> void:
-	transparency_mapping.resize(256*16*6)
-	transparency_mapping.fill(0)
+static func load_block_properties() -> void:
+	property_mapping.resize(256*16*6)
+	property_mapping.fill(0)
 	for id in transparent_blocks:
-		transparency_mapping[id] = 1
+		property_mapping[id] |= PropertyFlags.TRANSPARENT
+	for id in blocks_without_collision:
+		property_mapping[id] |= PropertyFlags.NO_COLLISION
 
 static func is_transparent(id : int) -> bool:
-	return bool(transparency_mapping[id])
+	return bool(property_mapping[id] & PropertyFlags.TRANSPARENT)
 
 static func get_block_shape(id : int) -> int:
 	return transparent_blocks_shapes.get(id, 0)
@@ -124,7 +135,7 @@ static func is_snow(id : int) -> bool:
 	return (id == 78) or (id == 80) # Add ice in the mix too maybe?
 
 static func has_collision(id : int) -> bool:
-	return id != 0 # TODO: do this properly
+	return !bool(property_mapping[id] & PropertyFlags.NO_COLLISION)
 
 static func get_block_slipperiness(id : int) -> float:
 	return 0.6 if id != 79 else 0.98
