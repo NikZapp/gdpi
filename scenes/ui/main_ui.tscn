@@ -1,0 +1,64 @@
+[gd_scene load_steps=5 format=3 uid="uid://b6i3ihcvivd4k"]
+
+[ext_resource type="Script" path="res://scenes/ui/scripts/main_ui.gd" id="1_232g3"]
+[ext_resource type="Texture2D" uid="uid://fti7f4xmty1" path="res://assets/ui.png" id="1_wufff"]
+[ext_resource type="PackedScene" uid="uid://b6f5lbrwtk02f" path="res://scenes/ui/server_screen.tscn" id="3_cobwu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tudpk"]
+atlas = ExtResource("1_wufff")
+region = Rect2(0, 0, 24, 11)
+
+[node name="MainMenu" type="Node"]
+script = ExtResource("1_232g3")
+
+[node name="MainScreen" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="MainScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainScreen/PanelContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="MainScreen/PanelContainer/VBoxContainer"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = SubResource("AtlasTexture_tudpk")
+expand_mode = 3
+
+[node name="ButtonServers" type="Button" parent="MainScreen/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Join
+"
+
+[node name="ButtonSettings" type="Button" parent="MainScreen/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Settings
+"
+
+[node name="ButtonQuit" type="Button" parent="MainScreen/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Quit
+"
+
+[node name="ServerScreen" parent="." instance=ExtResource("3_cobwu")]
+visible = false
+
+[connection signal="pressed" from="MainScreen/PanelContainer/VBoxContainer/ButtonServers" to="." method="_on_button_servers_pressed"]
+[connection signal="pressed" from="MainScreen/PanelContainer/VBoxContainer/ButtonSettings" to="." method="_on_button_settings_pressed"]
+[connection signal="pressed" from="MainScreen/PanelContainer/VBoxContainer/ButtonQuit" to="." method="_on_button_quit_pressed"]

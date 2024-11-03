@@ -35,8 +35,8 @@ func _ready():
 	create_collision_shapes()
 	
 	network_handler.received_packet_decoded.connect(_on_packet)
-	raknet.connect("localhost", 19132)
-	login("GodotPi")
+	raknet.connect(Global.ip, Global.port)
+	login(Global.username)
 
 func _process(delta):
 	update_server_position()

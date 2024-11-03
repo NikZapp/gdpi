@@ -1,0 +1,127 @@
+[gd_scene load_steps=4 format=3 uid="uid://b6f5lbrwtk02f"]
+
+[ext_resource type="Script" path="res://scenes/ui/scripts/local_server_list.gd" id="1_kqrdf"]
+[ext_resource type="Script" path="res://scenes/ui/scripts/back_button_handler.gd" id="1_rc5jl"]
+[ext_resource type="Script" path="res://scenes/ui/scripts/button_connect.gd" id="3_5lrsj"]
+
+[node name="ServerScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rc5jl")
+metadata/_edit_vertical_guides_ = [-66.0, -356.0]
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Servers" type="VBoxContainer" parent="PanelContainer/MarginContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonBack" type="Button" parent="PanelContainer/MarginContainer/HSplitContainer/Servers"]
+layout_mode = 2
+size_flags_vertical = 8
+text = "Back"
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/MarginContainer/HSplitContainer/Servers"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/HSplitContainer/Servers"]
+layout_mode = 2
+text = "Servers"
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="PanelContainer/MarginContainer/HSplitContainer/Servers"]
+layout_mode = 2
+
+[node name="RemoteServersList" type="VBoxContainer" parent="PanelContainer/MarginContainer/HSplitContainer/Servers"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/HSplitContainer/Servers"]
+layout_mode = 2
+text = "Local Games
+"
+horizontal_alignment = 1
+
+[node name="HSeparator3" type="HSeparator" parent="PanelContainer/MarginContainer/HSplitContainer/Servers"]
+layout_mode = 2
+
+[node name="LocalServersList" type="VBoxContainer" parent="PanelContainer/MarginContainer/HSplitContainer/Servers"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("1_kqrdf")
+
+[node name="ButtonRefresh" type="Button" parent="PanelContainer/MarginContainer/HSplitContainer/Servers"]
+layout_mode = 2
+size_flags_vertical = 8
+text = "Refresh"
+
+[node name="Options" type="VBoxContainer" parent="PanelContainer/MarginContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GridContainer" type="GridContainer" parent="PanelContainer/MarginContainer/HSplitContainer/Options"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/HSplitContainer/Options/GridContainer"]
+layout_mode = 2
+text = "Username"
+
+[node name="LineEditUsername" type="LineEdit" parent="PanelContainer/MarginContainer/HSplitContainer/Options/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "GodotPi"
+
+[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/HSplitContainer/Options/GridContainer"]
+layout_mode = 2
+text = "IP
+"
+
+[node name="LineEditIP" type="LineEdit" parent="PanelContainer/MarginContainer/HSplitContainer/Options/GridContainer"]
+layout_mode = 2
+placeholder_text = "localhost"
+
+[node name="Label3" type="Label" parent="PanelContainer/MarginContainer/HSplitContainer/Options/GridContainer"]
+layout_mode = 2
+text = "Port"
+
+[node name="LineEditPort" type="LineEdit" parent="PanelContainer/MarginContainer/HSplitContainer/Options/GridContainer"]
+layout_mode = 2
+placeholder_text = "19132"
+caret_blink = true
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/HSplitContainer/Options"]
+layout_mode = 2
+text = "awawawawa
+ooooo
+"
+clip_text = true
+
+[node name="ButtonConnect" type="Button" parent="PanelContainer/MarginContainer/HSplitContainer/Options"]
+layout_mode = 2
+text = "Connect"
+script = ExtResource("3_5lrsj")
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/HSplitContainer/Servers/ButtonBack" to="." method="_on_button_back_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/HSplitContainer/Servers/ButtonRefresh" to="PanelContainer/MarginContainer/HSplitContainer/Servers/LocalServersList" method="_on_button_refresh_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/HSplitContainer/Options/ButtonConnect" to="PanelContainer/MarginContainer/HSplitContainer/Options/ButtonConnect" method="_on_pressed"]
