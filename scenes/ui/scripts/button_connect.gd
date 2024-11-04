@@ -7,7 +7,9 @@ extends Button
 
 func _on_pressed() -> void:
 	Global.username = line_edit_username.text
+	if Global.username == "":
+		Global.username = "GodotPi"
 	Global.ip = line_edit_ip.text
 	Global.port = int(line_edit_port.text)
 	
-	get_tree().change_scene_to_file("res://main.tscn")
+	get_tree().change_scene_to_file("res://scenes/game_world.tscn")

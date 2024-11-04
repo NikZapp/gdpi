@@ -110,13 +110,6 @@ layout_mode = 2
 placeholder_text = "19132"
 caret_blink = true
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/HSplitContainer/Options"]
-layout_mode = 2
-text = "awawawawa
-ooooo
-"
-clip_text = true
-
 [node name="ButtonConnect" type="Button" parent="PanelContainer/MarginContainer/HSplitContainer/Options"]
 layout_mode = 2
 text = "Connect"
