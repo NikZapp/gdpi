@@ -8,7 +8,18 @@ var chunk_template = preload("res://objects/chunk.tscn")
 
 var world_blocks = PackedByteArray()
 var world_data = PackedByteArray()
-var loaded_chunks = Dictionary()
+var chunk_statuses = Dictionary()
+var chunk_generation_threads = Dictionary()
+var chunk_status_mutex = Mutex.new()
+var raknet_mutex = Mutex.new()
+
+enum ChunkStatus {
+	UNLOADED,
+	SENT,
+	RECEIVED,
+	BUILT
+}
+	
 
 func _ready():
 	world_blocks.resize(256*128*256)
@@ -17,21 +28,83 @@ func _ready():
 	
 	network_handler.received_packet_decoded.connect(_on_packet)
 	BlockUtils.setup()
-	
+
 func request_all_chunks():
 	for z in 16:
 		for x in 16:
-			raknet.send(protocol.encode("RequestChunkPacket", {
-				"x" : x, 
-				"z" : z
-			}))
+			if Vector2(x, z) in chunk_generation_threads:
+				chunk_status_mutex.lock()
+				chunk_statuses[Vector2(x, z)] = ChunkStatus.UNLOADED
+				chunk_status_mutex.unlock()
+			else:
+				var thread = Thread.new()
+				chunk_generation_threads[Vector2(x, z)] = thread
+				thread.start(load_chunk.bind(x, z, ChunkStatus.UNLOADED))
+
+
+func load_chunk(x, z, initial_status):
+	while true:
+		chunk_status_mutex.lock()
+		var status = chunk_statuses.get(Vector2(x, z), initial_status)
+		chunk_status_mutex.unlock()
+		var old_status = status
+		
+		#print("CHUNK ", x, " ", z, " : ", ["UNLOADED", "ASKED", "RECEIVED", "BUILT"][status])
+		match status:
+			ChunkStatus.UNLOADED:
+				raknet_mutex.lock()
+				raknet.send(protocol.encode("RequestChunkPacket", {
+					"x" : x, 
+					"z" : z
+				}))
+				raknet_mutex.unlock()
+				status = ChunkStatus.SENT
+				await get_tree().create_timer(1).timeout
+			ChunkStatus.SENT:
+				await get_tree().create_timer(5).timeout
+				chunk_status_mutex.lock()
+				if chunk_statuses.get([Vector2(x, z)], initial_status) == ChunkStatus.SENT:
+					raknet_mutex.lock()
+					raknet.send(protocol.encode("RequestChunkPacket", {
+						"x" : x, 
+						"z" : z
+					}))
+					raknet_mutex.unlock()
+				chunk_status_mutex.unlock()
+				
+			ChunkStatus.RECEIVED:
+				var can_build = true
+				for dx in [-1, 0, 1]:
+					var test_x = clamp(x + dx, 0, 15)
+					for dz in [-1, 0, 1]:
+						var test_z = clamp(z + dz, 0, 15)
+						var test_status = chunk_statuses.get(Vector2(test_x, test_z), initial_status)
+						if test_status < ChunkStatus.RECEIVED:
+							can_build = false
+				if can_build:
+					print("Building chunk ", x, ":", z)
+					var chunk = chunk_template.instantiate()
+					chunk.name = "x" + str(x) + "y*z" + str(z)
+					add_child(chunk)
+					chunk.setup_from_data(world_blocks, world_data, Vector2(x, z))
+					status = ChunkStatus.BUILT
+				else:
+					await get_tree().create_timer(1).timeout
+			ChunkStatus.BUILT:
+				pass
+				
+		chunk_status_mutex.lock()
+		if old_status == chunk_statuses.get(Vector2(x, z), initial_status):
+			chunk_statuses[Vector2(x, z)] = status
+		chunk_status_mutex.unlock()
+		if status == ChunkStatus.BUILT:
+			break
 
 @onready var chunks_built = false
 func _on_packet(packet : Dictionary):
 	match packet.packet_name:
 		"ChunkDataPacket":
-			loaded_chunks[Vector2(packet.x, packet.z)] = true
-			print("Got chunk " + str(packet.x) + ":" + str(packet.z) + " (" + str(len(loaded_chunks.keys())) + "/256)")
+			print("Got chunk " + str(packet.x) + ":" + str(packet.z))
 			var chunk_blocks : PackedByteArray = packet.data[0]
 			var chunk_data : PackedByteArray = packet.data[1]
 			# Make image from the data
@@ -53,6 +126,9 @@ func _on_packet(packet : Dictionary):
 							world_data[cursor >> 1] = chunk_data[chunk_cursor >> 1]
 						chunk_cursor += 1
 						cursor += 1
+			chunk_status_mutex.lock()
+			chunk_statuses[Vector2(packet.x, packet.z)] = ChunkStatus.RECEIVED
+			chunk_status_mutex.unlock()
 		"PlaceBlockPacket":
 			print("Placed block")
 			var cursor = coords_to_offset(packet.x, packet.y, packet.z)
@@ -125,20 +201,6 @@ func _on_packet(packet : Dictionary):
 				chunk.setup_from_data(world_blocks, world_data, Vector2(chunk_x, chunk_z))
 			else:
 				print("Block updated in an unloaded chunk, dropping packet!")
-	if len(loaded_chunks.keys()) == 256 and not chunks_built:
-		var start_time = Time.get_ticks_msec()
-		for x in 16:
-			for z in 16:
-				print("Building chunk ", x, ":", z)
-				var chunk = chunk_template.instantiate()
-				chunk.name = "x" + str(x) + "y*z" + str(z)
-				add_child(chunk)
-				chunk.setup_from_data(world_blocks, world_data, Vector2(x, z))
-		chunks_built = true
-		var end_time = Time.get_ticks_msec()
-		var time = end_time - start_time
-		print("Took ", time, "ms to build 256 chunks.")
-		print("Average: ", time/256, "ms/c")
 
 
 func get_water_height(pos : Vector3) -> float: # , const Material* pCheckMtl
