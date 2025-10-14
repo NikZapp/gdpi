@@ -1,5 +1,5 @@
 extends Object
-static var protocol_path = "res://pi_protocol/pi_protocol/data/protocol.json"
+static var protocol_path = "res://protocol.json"
 static var name_to_id : Dictionary
 static var packet_data : Dictionary
 
@@ -82,7 +82,16 @@ static func decode(data : PackedByteArray):
 				reverse_endianness(data, cursor, 8)
 				decoded_packet[field_name] = data.decode_u64(cursor)
 				cursor += 8
-			"String":
+			"StringBE":
+				#reverse_endianness(data, cursor, 2)
+				var length = data.decode_u16(cursor)
+				cursor += 2
+				var s = ""
+				for i in length:
+					s += char(data.decode_u8(cursor))
+					cursor += 1
+				decoded_packet[field_name] = s
+			"StringLE":
 				reverse_endianness(data, cursor, 2)
 				var length = data.decode_u16(cursor)
 				cursor += 2
@@ -266,7 +275,7 @@ static func encode(packet_id, data : Dictionary) -> PackedByteArray:
 						MetadataType.STRING:
 							var length = len(metadata)
 							encoded_packet.encode_s16(cursor, length)
-							reverse_endianness(encoded_packet, cursor, 2)
+							#reverse_endianness(encoded_packet, cursor, 2)
 							cursor += 2
 							var buf = value.to_ascii_buffer()
 							for i in length:
