@@ -22,7 +22,6 @@ void vertex() {
 	/*if (dot(NORMAL, vec3(0, -1, 0)) > 0.75) {
 		data.a += 1.0;
 	}*/
-
 }
 
 void fragment() {
@@ -72,7 +71,10 @@ void fragment() {
 	///vec3 worldspace_light_pos = LIGHT_VERTEX;
 	///worldspace_light_pos = floor(worldspace_light_pos * 16.0) / 16.0;
 	///LIGHT_VERTEX = worldspace_light_pos;
-
+	// Convert current fragment position (in view space) to world space
+    vec3 worldspace_light_pos = (INV_VIEW_MATRIX * vec4(LIGHT_VERTEX, 1.0)).xyz;
+	worldspace_light_pos = (round(worldspace_light_pos * 16.0 - 0.49)) / 16.0;
+	LIGHT_VERTEX = (VIEW_MATRIX * vec4(worldspace_light_pos, 1.0)).xyz;
 }
 
 //void light() {
