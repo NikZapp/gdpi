@@ -22,7 +22,7 @@
 	"MessagePacket": {
 		"id": 133,
 		"fields": {
-			"message": "StringBE"
+			"message": "StringLE"
 		}
 	},
 	"SetTimePacket": {

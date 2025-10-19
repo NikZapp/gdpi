@@ -82,7 +82,7 @@ func load_chunk(x, z, initial_status):
 						if test_status < ChunkStatus.RECEIVED:
 							can_build = false
 				if can_build:
-					print("Building chunk ", x, ":", z)
+					#print("Building chunk ", x, ":", z)
 					var chunk = chunk_template.instantiate()
 					chunk.name = "x" + str(x) + "y*z" + str(z)
 					add_child(chunk)
@@ -100,11 +100,32 @@ func load_chunk(x, z, initial_status):
 		if status == ChunkStatus.BUILT:
 			break
 
+func _process(_delta):
+	# Chunk sorting by distance
+	var camera = get_viewport().get_camera_3d()
+	if not camera:
+		return
+
+	var chunks = get_children()
+	var cam_pos = camera.global_position / 16.0
+	cam_pos = Vector2(cam_pos.x, cam_pos.z)
+	chunks.sort_custom(func(a, b):
+		return cam_pos.distance_squared_to(a.chunk_offset) < cam_pos.distance_squared_to(b.chunk_offset)
+	)
+	for chunk in chunks:
+		move_child(chunk, get_child_count() - 1)
+		var dist = camera.global_position.distance_squared_to(chunk.global_position)
+		if chunk.get_child(0).material_override:
+			chunk.get_child(0).material_override.render_priority = int(dist / 10.0)
+
+func update_light_data():
+	pass
+
 @onready var chunks_built = false
 func _on_packet(packet : Dictionary):
 	match packet.packet_name:
 		"ChunkDataPacket":
-			print("Got chunk " + str(packet.x) + ":" + str(packet.z))
+			#print("Got chunk " + str(packet.x) + ":" + str(packet.z))
 			var chunk_blocks : PackedByteArray = packet.data[0]
 			var chunk_data : PackedByteArray = packet.data[1]
 			# Make image from the data

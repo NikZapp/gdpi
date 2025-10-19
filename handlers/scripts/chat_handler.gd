@@ -18,10 +18,10 @@ func _ready():
 func _on_packet(packet : Dictionary) -> void:
 	match packet.packet_name:
 		"MessagePacket":
-			#print("MSG ", packet.message)
+			print("MSG ", packet.message)
 			add_chat_log(packet.message + "\n")
 		"ChatPacket":
-			#print("CHAT ", packet.message)
+			print("CHAT ", packet.message)
 			add_chat_log("[CHAT]" + packet.message + "\n")
 
 func update_visibility():

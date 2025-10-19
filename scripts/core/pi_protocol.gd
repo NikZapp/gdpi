@@ -1,5 +1,5 @@
 extends Object
-static var protocol_path = "res://protocol.json"
+static var protocol_path = "res://data/protocol.json"
 static var name_to_id : Dictionary
 static var packet_data : Dictionary
 
@@ -85,6 +85,9 @@ static func decode(data : PackedByteArray):
 			"StringBE":
 				#reverse_endianness(data, cursor, 2)
 				var length = data.decode_u16(cursor)
+				print("BE", length)
+				if length > 100:
+					print(data)
 				cursor += 2
 				var s = ""
 				for i in length:
@@ -94,6 +97,7 @@ static func decode(data : PackedByteArray):
 			"StringLE":
 				reverse_endianness(data, cursor, 2)
 				var length = data.decode_u16(cursor)
+				print("LE", length)
 				cursor += 2
 				var s = ""
 				for i in length:

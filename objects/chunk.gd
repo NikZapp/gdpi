@@ -582,7 +582,7 @@ func build_mesh():
 	water_multimesh.use_custom_data = true
 	water_multimesh.instance_count = len(water_transform_array)
 	water_multimesh.visible_instance_count = len(water_transform_array)
-	print("Water L:", len(water_transform_array))
+	#print("Water L:", len(water_transform_array))
 	for i in len(water_transform_array):
 		water_multimesh.set_instance_transform(i, water_transform_array[i])
 		water_multimesh.set_instance_custom_data(i, Color(0, uv_water_array[i], 0, 0))

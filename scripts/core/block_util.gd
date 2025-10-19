@@ -43,7 +43,7 @@ static var transparent_blocks_shapes = {
 }
 
 static func setup() -> void:
-	load_uv_mappings("res://assets/data/uv.txt")
+	load_uv_mappings("res://data/uv.txt")
 	load_block_properties()
 
 static func load_uv_mappings(filepath : String) -> void:

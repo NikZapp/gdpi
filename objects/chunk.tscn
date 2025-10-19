@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://b3qf6vyf4f8un"]
 
-[ext_resource type="Script" path="res://objects/chunk.gd" id="1_y61qe"]
+[ext_resource type="Script" uid="uid://cjnfsno873ina" path="res://objects/chunk.gd" id="1_y61qe"]
 [ext_resource type="Material" uid="uid://dgycra1gob56r" path="res://materials/chunk_material.tres" id="2_13owc"]
 [ext_resource type="Material" uid="uid://bm0o2aqbqcl7l" path="res://materials/water_material.tres" id="3_o8wvh"]
 
