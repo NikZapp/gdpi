@@ -452,10 +452,10 @@ func build_mesh():
 									render_shape_triangulated_cube(cube_v_set, pos, cursor, block, aux)
 								else:
 									#print(chunk_handler.get_water_height(pos))
-									var height_a = chunk_handler.get_water_height(pos)
-									var height_b = chunk_handler.get_water_height(pos + Vector3(0,0,1))
-									var height_c = chunk_handler.get_water_height(pos + Vector3(1,0,0))
-									var height_d = chunk_handler.get_water_height(pos + Vector3(1,0,1))
+									var height_a = chunk_handler.get_liquid_height(pos)
+									var height_b = chunk_handler.get_liquid_height(pos + Vector3(0,0,1))
+									var height_c = chunk_handler.get_liquid_height(pos + Vector3(1,0,0))
+									var height_d = chunk_handler.get_liquid_height(pos + Vector3(1,0,1))
 									var water_v_set : PackedVector3Array = [
 										Vector3(0,0,0),
 										Vector3(0,0,1),
@@ -466,7 +466,11 @@ func build_mesh():
 										Vector3(1,height_c,0),
 										Vector3(1,height_d,1)
 									]
-									render_shape_triangulated_cube(water_v_set, pos, cursor, block, aux)
+									if BlockUtils.is_water(block_ids[cursor + step_y]):
+										render_shape_triangulated_cube(water_v_set, pos, cursor, block, aux)
+									else:
+										# Render lava separately. TODO!!!
+										render_shape_triangulated_cube(water_v_set, pos, cursor, block, aux)
 							5:
 								# Slab
 								if aux < 8:

@@ -224,16 +224,16 @@ func _on_packet(packet : Dictionary):
 				print("Block updated in an unloaded chunk, dropping packet!")
 
 
-func get_water_height(pos : Vector3) -> float: # , const Material* pCheckMtl
+func get_liquid_height(pos : Vector3) -> float: # , const Material* pCheckMtl
 	var sample_count : int = 0
 	var sample_height_sum : float = 0.0
 	for i in 4:
 		var check_pos = pos - Vector3(i & 1, 0, i >> 1)
 		
-		if BlockUtils.is_water(get_block(check_pos + Vector3(0,1,0))):
+		if BlockUtils.is_liquid(get_block(check_pos + Vector3(0,1,0))):
 			return 1.0
 		
-		if BlockUtils.is_water(get_block(check_pos)):
+		if BlockUtils.is_liquid(get_block(check_pos)):
 			var data = get_data(check_pos)
 			if data >= 8 or data == 0:
 				sample_height_sum += data_to_liquid_volume(get_data(check_pos)) * 10.0

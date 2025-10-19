@@ -131,6 +131,9 @@ static func is_water(id : int) -> bool:
 static func is_lava(id : int) -> bool:
 	return (id == 10) or (id == 11)
 
+static func is_liquid(id : int) -> bool:
+	return is_water(id) or is_lava(id)
+
 static func is_snow(id : int) -> bool:
 	return (id == 78) or (id == 80) # Add ice in the mix too maybe?
 
