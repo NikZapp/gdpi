@@ -1,19 +1,21 @@
-[gd_scene load_steps=21 format=3 uid="uid://c2ut2atrxci7q"]
+[gd_scene load_steps=23 format=3 uid="uid://c2ut2atrxci7q"]
 
 [ext_resource type="PackedScene" uid="uid://bsvd0fcmo2sw2" path="res://handlers/network.tscn" id="1_1c6ea"]
 [ext_resource type="PackedScene" uid="uid://fmitdbhq3dbv" path="res://handlers/entity_handler.tscn" id="2_f2kww"]
-[ext_resource type="Shader" path="res://materials/shaders/border.gdshader" id="3_qvykt"]
+[ext_resource type="Shader" uid="uid://cwmf42tgquas1" path="res://materials/shaders/border.gdshader" id="3_qvykt"]
 [ext_resource type="Texture2D" uid="uid://cmnd5iqc2gm07" path="res://assets/out_of_bounds.png" id="4_vca08"]
 [ext_resource type="PackedScene" uid="uid://0n67sr0dp38s" path="res://handlers/time_handler.tscn" id="5_mtwnm"]
 [ext_resource type="PackedScene" uid="uid://mvsdtfllx62v" path="res://handlers/player_handler.tscn" id="6_q26jf"]
 [ext_resource type="PackedScene" uid="uid://fgig8lhg16mq" path="res://handlers/chunk_handler.tscn" id="7_ao7rl"]
+[ext_resource type="PackedScene" uid="uid://dy27nl13h3x6q" path="res://handlers/chat_handler.tscn" id="8_u4x5r"]
 [ext_resource type="PackedScene" uid="uid://b7slu3ypsw37t" path="res://handlers/player.tscn" id="8_udpxv"]
-[ext_resource type="Script" path="res://scripts/player_components/func_keys_controller.gd" id="9_ujfup"]
-[ext_resource type="Script" path="res://scripts/player_components/free_cam_rotation.gd" id="10_f5dei"]
-[ext_resource type="Script" path="res://scripts/player_components/free_cam_position.gd" id="11_l7r3s"]
-[ext_resource type="Script" path="res://scripts/player_components/debug_fps.gd" id="12_ybe88"]
-[ext_resource type="Script" path="res://scripts/player_components/debug_pos_rot.gd" id="13_t6pjt"]
-[ext_resource type="Script" path="res://scripts/player_components/wasd_movement.gd" id="14_i3crx"]
+[ext_resource type="Script" uid="uid://ctae0deetrhu1" path="res://scripts/player_components/func_keys_controller.gd" id="9_ujfup"]
+[ext_resource type="Script" uid="uid://d0bpp4e5ai6d8" path="res://scripts/player_components/free_cam_rotation.gd" id="10_f5dei"]
+[ext_resource type="Script" uid="uid://bvj38n36kld5" path="res://scripts/player_components/free_cam_position.gd" id="11_l7r3s"]
+[ext_resource type="Script" uid="uid://boerfa0l7jvkb" path="res://scripts/player_components/debug_fps.gd" id="12_ybe88"]
+[ext_resource type="Script" uid="uid://bbi7aq2s8i6cp" path="res://scripts/player_components/debug_pos_rot.gd" id="13_t6pjt"]
+[ext_resource type="Script" uid="uid://b7ae1c5wausgx" path="res://scripts/player_components/wasd_movement.gd" id="14_i3crx"]
+[ext_resource type="Script" uid="uid://40dhq0e5bu1" path="res://scripts/player_components/chat_buttons.gd" id="17_oyepb"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4efnn"]
 render_priority = 0
@@ -70,9 +72,13 @@ network_handler_path = NodePath("../Network")
 [node name="ChunkHandler" parent="." instance=ExtResource("7_ao7rl")]
 network_handler_path = NodePath("../Network")
 
+[node name="ChatHandler" parent="." instance=ExtResource("8_u4x5r")]
+network_handler_path = NodePath("../Network")
+
 [node name="Player" parent="." instance=ExtResource("8_udpxv")]
 network_handler_path = NodePath("../Network")
 chunk_handler_path = NodePath("../ChunkHandler")
+chat_handler_path = NodePath("../ChatHandler")
 
 [node name="Func keys" type="Node" parent="Player"]
 script = ExtResource("9_ujfup")
@@ -91,3 +97,6 @@ script = ExtResource("13_t6pjt")
 
 [node name="WASD movement" type="Node" parent="Player"]
 script = ExtResource("14_i3crx")
+
+[node name="Chat buttons" type="Node" parent="Player"]
+script = ExtResource("17_oyepb")

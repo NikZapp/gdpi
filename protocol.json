@@ -2,7 +2,7 @@
 	"LoginPacket": {
 		"id": 130,
 		"fields": {
-			"username": "StringBE",
+			"username": "StringLE",
 			"protocol1": "IntBE",
 			"protocol2": "IntBE"
 		}
@@ -22,7 +22,7 @@
 	"MessagePacket": {
 		"id": 133,
 		"fields": {
-			"message": "StringLE"
+			"message": "StringBE"
 		}
 	},
 	"SetTimePacket": {
@@ -414,7 +414,7 @@
 	"ChatPacket": {
 		"id": 180,
 		"fields": {
-			"message": "StringBE"
+			"message": "StringLE"
 		}
 	},
 	"SignUpdatePacket": {

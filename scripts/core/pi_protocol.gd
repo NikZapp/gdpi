@@ -240,10 +240,18 @@ static func encode(packet_id, data : Dictionary) -> PackedByteArray:
 				encoded_packet.encode_u64(cursor, value)
 				reverse_endianness(encoded_packet, cursor, 8)
 				cursor += 8
-			"String":
+			"StringLE":
 				var length = len(value)
 				encoded_packet.encode_s16(cursor, length)
 				reverse_endianness(encoded_packet, cursor, 2)
+				cursor += 2
+				var buf = value.to_ascii_buffer()
+				for i in length:
+					encoded_packet[cursor] = buf[i]
+					cursor += 1
+			"StringBE":
+				var length = len(value)
+				encoded_packet.encode_s16(cursor, length)
 				cursor += 2
 				var buf = value.to_ascii_buffer()
 				for i in length:

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://0n67sr0dp38s"]
 
-[ext_resource type="Script" path="res://handlers/scripts/time_handler.gd" id="1_ko1q1"]
+[ext_resource type="Script" uid="uid://b6wxgp2xk4xfv" path="res://handlers/scripts/time_handler.gd" id="1_ko1q1"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_c6b1i"]
 mie_eccentricity = 0.89
@@ -8,6 +8,7 @@ use_debanding = false
 
 [sub_resource type="Sky" id="Sky_fyvys"]
 sky_material = SubResource("PhysicalSkyMaterial_c6b1i")
+radiance_size = 0
 
 [sub_resource type="Environment" id="Environment_nab82"]
 background_mode = 2

@@ -12,7 +12,7 @@ func _ready():
 
 func _physics_process(delta: float) -> void:
 	var speed_change = 0
-	if !player.normal_movement:
+	if !player.normal_movement and len(player.current_menu_path) == 0:
 		var direction = Vector3.ZERO
 		direction.z = int(Input.is_action_pressed("move_backward")) - int(Input.is_action_pressed("move_forward"))
 		direction.x = int(Input.is_action_pressed("move_right")) - int(Input.is_action_pressed("move_left"))
@@ -24,11 +24,11 @@ func _physics_process(delta: float) -> void:
 		speed_change = int(Input.is_action_pressed("speed_increase")) - int(Input.is_action_pressed("speed_decrease"))
 		speed_exponent += speed_exponent_change_speed * speed_change * delta
 		
-	if Input.is_action_pressed("align_position"):
+	if Input.is_action_pressed("align_position") and len(player.current_menu_path) == 0:
 		var k = 1.0 - pow(0.01, delta)
 		player.position = lerp(player.position, round(player.position), k)
 	
-	if player.is_debug_module_enabled("freecam_speed"):
+	if player.is_debug_module_enabled("freecam_speed") and len(player.current_menu_path) == 0:
 		var debug_text
 		debug_text = "Speed Exponent:" + str(speed_exponent) + "\n"
 		debug_text += "Speed:" + str(pow(speed, speed_exponent)) + "\n"

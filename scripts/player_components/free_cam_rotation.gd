@@ -6,7 +6,7 @@ extends Node
 var rotation_speed = deg_to_rad(40)
 
 func _process(delta):
-	if true: #!player.normal_movement:
+	if true and len(player.current_menu_path) == 0: #!player.normal_movement:
 		var rotation_direction = Vector3.ZERO
 		rotation_direction.z = int(Input.is_action_pressed("turn_counterclockwise")) - int(Input.is_action_pressed("turn_clockwise"))
 		rotation_direction.x = int(Input.is_action_pressed("turn_right")) - int(Input.is_action_pressed("turn_left"))
@@ -20,7 +20,7 @@ func _process(delta):
 		
 		var speed_change = int(Input.is_action_pressed("speed_increase")) - int(Input.is_action_pressed("speed_decrease"))
 		
-	if Input.is_action_pressed("align_rotation"):
+	if Input.is_action_pressed("align_rotation") and len(player.current_menu_path) == 0:
 		var k = 1.0 - pow(0.05, delta)
 		camera.transform = Transform3D(
 			lerp(camera.basis.x, round(camera.basis.x), k), 

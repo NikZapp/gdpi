@@ -1,0 +1,75 @@
+[gd_scene load_steps=2 format=3 uid="uid://dy27nl13h3x6q"]
+
+[ext_resource type="Script" uid="uid://dwky05i0wghlx" path="res://handlers/scripts/chat_handler.gd" id="1_sskim"]
+
+[node name="ChatHandler" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_sskim")
+
+[node name="Chat" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="Panel" type="Panel" parent="Chat"]
+self_modulate = Color(1, 1, 1, 0.3137255)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Chat/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ChatRichTextLabel" type="RichTextLabel" parent="Chat/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+vertical_alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Chat/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="ChatTextEdit" type="TextEdit" parent="Chat/Panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SendButton" type="Button" parent="Chat/Panel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+text = "Send"
+
+[node name="LiveChat" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="Container" type="Container" parent="LiveChat"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="pressed" from="Chat/Panel/VBoxContainer/HBoxContainer/SendButton" to="." method="_on_send_button_pressed"]

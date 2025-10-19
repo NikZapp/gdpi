@@ -10,8 +10,11 @@ extends CharacterBody3D
 @onready var hitbox = $Hitbox
 
 @export var chunk_handler_path : NodePath
+@export var chat_handler_path : NodePath
 @onready var chunk_handler : Node = get_node(chunk_handler_path)
+@onready var chat_handler : Node = get_node(chat_handler_path)
 
+# Movement
 var normal_movement = false
 var is_sprinting = false
 var is_sneaking = false
@@ -19,15 +22,26 @@ var collision_shapes = {}
 var movement = Vector3(0, 0, 0) # What you are inputting (joystick/keyboard)
 var motion = Vector3(0, 0, 0) # Actual motion
 
+# Server position syncronisation
 var old_pos = Vector3()
 var old_rotation = Vector3()
 var id = -1
 
+# Login process
 var logged_in : bool = false
 
+# F3 screen
 var debug_module_data : Dictionary = {}
 
+# Chat
+var is_chat_open : bool = false
+
+# Menus
+var current_menu_path : Array = []
+
 func _ready():
+	add_debug_module("menu_path")
+	
 	add_debug_module("freecam_speed")
 	add_debug_module("pos_rot_display")
 	add_debug_module("performance_fps")
@@ -38,9 +52,13 @@ func _ready():
 	raknet.connect(Global.ip, Global.port)
 	login(Global.username)
 
+
 func _process(delta):
+	set_debug_module_text("menu_path", "menu path: " + str(current_menu_path))
+	
 	update_server_position()
 	update_debug_menu()
+
 
 func _physics_process(delta: float) -> void:
 	if normal_movement:
@@ -50,6 +68,7 @@ func _physics_process(delta: float) -> void:
 	update_collision_shapes()
 	hitbox.disabled = !normal_movement
 
+
 func _on_packet(packet : Dictionary):
 	match packet.packet_name:
 		"StartGamePacket":
@@ -57,14 +76,17 @@ func _on_packet(packet : Dictionary):
 			position = Vector3(packet.x, packet.y, packet.z)
 			logged_in = true
 		"LoginStatusPacket":
-			print("Login status " + str(packet.status))
+			chat_handler.add_chat_log("[b]Login status {0}[/b]\n".format(packet.status))
 			if packet.status != 0:
-				print("Invalid login status!")
+				chat_handler.add_chat_log("[b][color=red]Invalid login status![/color][/b]\n")
+				#print("Invalid login status!")
 				match packet.status:
 					1:
-						print("Outdated client")
+						chat_handler.add_chat_log("[b][color=red]Outdated client[/color][/b]\n")
+						#print("Outdated client")
 					2:
-						print("Outdated server")
+						chat_handler.add_chat_log("[b][color=red]Outdated server[/color][/b]\n")
+						#print("Outdated server")
 			elif not logged_in:
 				raknet.send(protocol.encode("ReadyPacket", {
 					"status": 1
@@ -79,13 +101,40 @@ func login(username : String):
 		"protocol_2": 9,
 	})
 	raknet.send(login_packet)
+	chat_handler.add_chat_log("[b]Logging in as {0}[/b]\n".format([username]))
+
 
 func logout():
 	raknet.shutdown()
 
+
+func open_chat():
+	if len(current_menu_path) != 0 and current_menu_path[-1] == "chat":
+		return is_chat_open
+	current_menu_path.append("chat")
+	is_chat_open = chat_handler.open_chat()
+	return is_chat_open
+
+
+func close_chat():
+	if len(current_menu_path) != 0 and current_menu_path[-1] == "chat":
+		current_menu_path.pop_back()
+		is_chat_open = chat_handler.close_chat()
+	return is_chat_open
+
+
+func send_chat():
+	if len(current_menu_path) != 0 and current_menu_path[-1] == "chat":
+		current_menu_path.pop_back()
+		is_chat_open = chat_handler.send_chat()
+	return is_chat_open
+
+
 func _exit_tree():
-	print("Logout")
+	chat_handler.add_chat_log("[b]Logout[/b]\n")
+	#print("Logout")
 	logout()
+
 
 func screenshot(filename : String) -> void:
 	var user_folder = DirAccess.open("user://")
@@ -94,43 +143,55 @@ func screenshot(filename : String) -> void:
 	var screen_image = get_viewport().get_texture().get_image()
 	var full_filename = "user://screenshots/" + str(filename) + ".png"
 	screen_image.save_png(full_filename)
-	print("Saved screenshot to " + ProjectSettings.globalize_path(full_filename))
+	chat_handler.add_chat_log("Saved screenshot to {0}".format([ProjectSettings.globalize_path(full_filename)]))
+
 
 func set_debug_menu_visibility(_visible : bool) -> void:
 	debug_menu.visible = _visible
 
+
 func get_debug_menu_visibility() -> bool:
 	return debug_menu.visible
+
 
 func enable_normal_movement() -> void:
 	normal_movement = true
 
+
 func disable_normal_movement() -> void:
 	normal_movement = false
+
 
 func jump():
 	if is_on_floor():
 		motion.y = 0.42
 
+
 func sprint(sprinting : bool):
 	is_sprinting = sprinting
+
 
 func sneak(sneaking : bool):
 	is_sneaking = sneaking
 
+
 func is_debug_module_enabled(path : String):
 	return path in debug_module_data.keys()
+
 
 func add_debug_module(path : String):
 	if not is_debug_module_enabled(path):
 		debug_module_data[path] = ""
 
+
 func remove_debug_module(path : String):
 	debug_module_data.erase(path)
+
 
 func set_debug_module_text(path : String, text : String):
 	if is_debug_module_enabled(path):
 		debug_module_data[path] = text
+
 
 func update_debug_menu():
 	if debug_menu.visible:
@@ -138,6 +199,7 @@ func update_debug_menu():
 		for module in debug_module_data.keys():
 			full_text += debug_module_data[module] + "\n"
 		debug_menu.text = full_text
+
 
 func update_server_position():
 	if logged_in:
@@ -154,6 +216,7 @@ func update_server_position():
 			old_pos = position
 			old_rotation = camera.rotation_degrees
 
+
 func create_collision_shapes():
 	for dx in range(-1, 2):
 		for dz in range(-1, 2):
@@ -164,6 +227,7 @@ func create_collision_shapes():
 				box.position = Vector3(-10, -10, -10)
 				collision_node.add_child(box)
 				collision_shapes[Vector3(dx, dy, dz)] = box
+
 
 func update_collision_shapes():
 	var pos = floor(position)
@@ -180,6 +244,7 @@ func update_collision_shapes():
 					collision_shapes[offset].shape.size = collision_aabb.size
 				else:
 					collision_shapes[offset].position = Vector3(-10, -10, -10) # Disable kinda
+
 
 func update_movement(delta):
 	if is_sneaking:
@@ -222,6 +287,7 @@ func update_movement(delta):
 
 	motion.x *= pow(mult, ticks);
 	motion.z *= pow(mult, ticks);
+
 
 func update_motion_xz(strafe : float, forward : float, movement_factor : float):
 	var distance_sq = strafe * strafe + forward * forward
